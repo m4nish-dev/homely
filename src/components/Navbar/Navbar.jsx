@@ -10,11 +10,13 @@ import { FaUserCircle } from "react-icons/fa";
 function Navbar() {
   return (
     <nav className="navbar">
+
       <div className="navbar-left">
         <h2 className="logo">Homely</h2>
       </div>
 
       <div className="navbar-center">
+
         <div className="nav-item active">
           <FaHotel />
           <span>Hotels</span>
@@ -29,9 +31,11 @@ function Navbar() {
           <FaHome />
           <span>Villas</span>
         </div>
+
       </div>
 
       <div className="navbar-right">
+
         <button className="host-btn">
           Become a Host
         </button>
@@ -44,7 +48,9 @@ function Navbar() {
           <FaBars />
           <FaUserCircle />
         </div>
+
       </div>
+
     </nav>
   );
 }

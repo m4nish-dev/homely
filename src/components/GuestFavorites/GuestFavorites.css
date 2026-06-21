@@ -1,0 +1,45 @@
+.favorites {
+  padding: 60px;
+}
+
+.favorites h2 {
+  font-size: 40px;
+  margin-bottom: 30px;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.favorite-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+.favorite-card:hover {
+  transform: translateY(-8px);
+}
+
+.favorite-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.favorite-info {
+  padding: 20px;
+}
+
+.favorite-info h3 {
+  margin-bottom: 10px;
+}
+
+.favorite-info p {
+  color: gray;
+  margin-bottom: 10px;
+}

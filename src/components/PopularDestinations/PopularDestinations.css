@@ -1,0 +1,50 @@
+.destinations {
+  padding: 35px 60px;
+}
+
+.destinations h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #2f3a2f;
+}
+
+.destinations-grid {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  column-gap: 40px;
+  row-gap: 18px;
+}
+
+.city-item {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.city-item:hover {
+  transform: translateX(3px);
+}
+
+.city-item img {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.city-item span {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #374151;
+}
