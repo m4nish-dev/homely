@@ -1,5 +1,10 @@
 .navbar {
-  height: 90px;
+  height: 88px;
+
+  position: sticky;
+  top: 0;
+
+  z-index: 1000;
 
   display: flex;
   justify-content: space-between;
@@ -7,35 +12,50 @@
 
   padding: 0 60px;
 
-  background:  #c3c49469;
+  background: rgba(232, 229, 220, 0.92);
 
-  border-bottom: none;
+  backdrop-filter: blur(12px);
+
+  border-bottom: 1px solid #ece8df;
 }
+
+/* Logo */
 
 .logo {
-  font-size: 32px;
-  font-weight: 700;
-  color: #18181b;
+  font-size: 34px;
+
+  font-weight: 800;
+
+  letter-spacing: -1px;
+
+  color: #2f3a2f;
+
+  cursor: pointer;
 }
+
+/* Center Menu */
 
 .navbar-center {
   display: flex;
-  gap: 60px;
+
+  gap: 55px;
 }
 
 .nav-item {
+  position: relative;
+
   display: flex;
   flex-direction: column;
 
   align-items: center;
 
-  gap: 8px;
+  gap: 6px;
 
-  color: #71717a;
+  color: #6b7280;
 
   cursor: pointer;
 
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .nav-item svg {
@@ -43,46 +63,72 @@
 }
 
 .nav-item span {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .nav-item:hover {
-  color: #18181b;
+  color: #2f3a2f;
+
+  transform: translateY(-2px);
 }
 
-.active {
-  color: #18181b;
+.nav-item.active {
+  color: #2f3a2f;
 }
+
+.nav-item.active::after {
+  content: "";
+
+  position: absolute;
+
+  bottom: -14px;
+
+  width: 32px;
+  height: 3px;
+
+  border-radius: 999px;
+
+  background: #d89b4a;
+}
+
+/* Right */
 
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 18px;
+
+  gap: 14px;
 }
+
+/* Host Button */
 
 .host-btn {
   border: none;
 
-  padding: 14px 24px;
+  padding: 13px 22px;
 
   border-radius: 999px;
 
-  background: #18181b;
+  background: #2f3a2f;
 
   color: white;
 
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 700;
 
   cursor: pointer;
 
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .host-btn:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+
+  background: #232c23;
 }
+
+/* Globe */
 
 .globe-icon {
   width: 46px;
@@ -94,18 +140,32 @@
   justify-content: center;
   align-items: center;
 
-  background: #f4f4f5;
+  background: white;
+
+  color: #374151;
 
   cursor: pointer;
 
-  font-size: 18px;
+  transition: all 0.3s ease;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
+.globe-icon:hover {
+  background: #f8f8f5;
+
+  transform: scale(1.05);
+}
+
+/* Menu */
+
 .menu-profile {
-  width: 85px;
+  width: 88px;
   height: 48px;
 
-  border: 1px solid #d4d4d8;
+  background: white;
+
+  border: 1px solid #ece8df;
 
   border-radius: 999px;
 
@@ -115,13 +175,19 @@
 
   cursor: pointer;
 
-  transition: 0.3s;
+  transition: all 0.3s ease;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .menu-profile:hover {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .menu-profile svg {
   font-size: 18px;
+
+  color: #374151;
 }

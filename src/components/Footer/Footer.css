@@ -45,3 +45,30 @@
 
   color: #6b7280;
 }
+.footer {
+  background: #2f3a2f;
+
+  color: white;
+
+  padding: 50px 60px 20px;
+}
+
+.footer-section h3,
+.footer-section h4 {
+  color: white;
+}
+
+.footer-section p,
+.footer-section li {
+  color: #d4d4d4;
+}
+
+.footer-section li:hover {
+  color: #d4c29a;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+
+  color: #cfcfcf;
+}

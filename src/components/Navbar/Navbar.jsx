@@ -1,18 +1,22 @@
 import "./Navbar.css";
 
-import { FaHotel } from "react-icons/fa";
-import { FaBuilding } from "react-icons/fa";
-import { FaHome } from "react-icons/fa";
-import { FaGlobe } from "react-icons/fa";
-import { FaBars } from "react-icons/fa";
-import { FaUserCircle } from "react-icons/fa";
+import {
+  FaHotel,
+  FaBuilding,
+  FaHome,
+  FaGlobe,
+  FaBars,
+  FaUserCircle,
+} from "react-icons/fa";
 
 function Navbar() {
   return (
     <nav className="navbar">
 
       <div className="navbar-left">
-        <h2 className="logo">Homely</h2>
+        <h2 className="logo">
+          Homely
+        </h2>
       </div>
 
       <div className="navbar-center">

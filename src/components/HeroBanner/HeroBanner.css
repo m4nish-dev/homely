@@ -1,13 +1,18 @@
 .hero-banner {
-  height: 420px;
+  height: 480px;
 
-  margin: 30px 60px;
+  margin: 35px 60px;
 
-  border-radius: 30px;
+  border-radius: 32px;
 
-  background-image: linear-gradient(
-      rgba(0, 0, 0, 0.35),
-      rgba(0, 0, 0, 0.35)
+  overflow: hidden;
+
+  position: relative;
+
+  background-image:
+    linear-gradient(
+      rgba(0,0,0,0.35),
+      rgba(0,0,0,0.35)
     ),
     url("https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600");
 
@@ -18,35 +23,44 @@
   align-items: center;
 
   padding-left: 80px;
-
-  overflow: hidden;
 }
 
 .hero-content {
-  max-width: 550px;
+  max-width: 520px;
 
   color: white;
 }
 
-.hero-content h1 {
-  font-size: 52px;
-  font-weight: 800;
+.hero-content span {
+  font-size: 14px;
 
-  margin-bottom: 15px;
+  text-transform: uppercase;
+
+  letter-spacing: 2px;
+
+  opacity: 0.9;
+}
+
+.hero-content h1 {
+  font-size: 56px;
+
+  line-height: 1.1;
+
+  margin: 16px 0;
 }
 
 .hero-content p {
-  color: rgba(255, 255, 255, 0.9);
-
   font-size: 18px;
 
-  margin-bottom: 30px;
+  line-height: 1.7;
+
+  margin-bottom: 28px;
 }
 
 .hero-content button {
-  border: none;
+  padding: 15px 28px;
 
-  padding: 14px 30px;
+  border: none;
 
   border-radius: 999px;
 
@@ -54,7 +68,6 @@
 
   color: white;
 
-  font-size: 15px;
   font-weight: 700;
 
   cursor: pointer;

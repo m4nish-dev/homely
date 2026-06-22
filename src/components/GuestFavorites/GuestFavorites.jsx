@@ -1,4 +1,5 @@
 import "./GuestFavorites.css";
+
 function GuestFavorites() {
   const favorites = [
     {
@@ -29,18 +30,46 @@ function GuestFavorites() {
 
   return (
     <section className="favorites">
-      <h2>Guest Favorites</h2>
+
+      <div className="section-header">
+        <h2>Top Rated Properties</h2>
+
+        <p>
+          Loved by thousands of travelers across India.
+        </p>
+      </div>
 
       <div className="favorites-grid">
         {favorites.map((hotel) => (
-          <div className="favorite-card" key={hotel.id}>
-            <img src={hotel.image} alt={hotel.name} />
+          <div
+            className="favorite-card"
+            key={hotel.id}
+          >
+            <div className="image-wrapper">
+
+              <img
+                src={hotel.image}
+                alt={hotel.name}
+              />
+
+              <div className="traveler-badge">
+                🏆 Traveler Choice
+              </div>
+
+            </div>
 
             <div className="favorite-info">
-              <h3>{hotel.name}</h3>
+
+              <div className="favorite-top">
+                <h3>{hotel.name}</h3>
+
+                <span className="rating">
+                  ⭐ {hotel.rating}
+                </span>
+              </div>
+
               <p>{hotel.location}</p>
 
-              <span>⭐ {hotel.rating}</span>
             </div>
           </div>
         ))}

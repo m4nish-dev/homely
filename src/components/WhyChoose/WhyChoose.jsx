@@ -7,7 +7,11 @@ function WhyChoose() {
   return (
     <section className="why-choose">
       <h2>Why Choose Homely?</h2>
+  <p>
 
+    Experience comfort, convenience and trusted stays.
+
+  </p>
       <div className="features-grid">
 
         <div className="feature-card">
