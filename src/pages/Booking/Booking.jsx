@@ -11,14 +11,9 @@ function Booking() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [guests, setGuests] =
-    useState(1);
-
-  const [checkIn, setCheckIn] =
-    useState("");
-
-  const [checkOut, setCheckOut] =
-    useState("");
+  const [guests, setGuests] = useState(1);
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
 
   const properties = {
     1: {
@@ -56,18 +51,37 @@ function Booking() {
 
   const property = properties[id];
 
-  const serviceFee = 499;
+  if (!property) {
+    return (
+      <div className="booking-page">
+        <h1>Property Not Found</h1>
 
-  const total =
-    property.price + serviceFee;
+        <button
+          className="book-btn"
+          onClick={() => navigate("/")}
+        >
+          Back To Home
+        </button>
+      </div>
+    );
+  }
+
+  const serviceFee = 499;
+  const total = property.price + serviceFee;
 
   const handleBooking = () => {
     if (!checkIn || !checkOut) {
       alert(
-        "Please select check-in and check-out dates"
+        "Please select both Check-in and Check-out dates."
       );
       return;
     }
+
+    const bookingId =
+      "HM" +
+      Math.floor(
+        100000 + Math.random() * 900000
+      );
 
     navigate("/booking-success", {
       state: {
@@ -77,6 +91,7 @@ function Booking() {
         checkOut,
         guests,
         total,
+        bookingId,
       },
     });
   };
@@ -109,13 +124,9 @@ function Booking() {
 
             <div>
 
-              <h3>
-                {property.title}
-              </h3>
+              <h3>{property.title}</h3>
 
-              <p>
-                {property.location}
-              </p>
+              <p>{property.location}</p>
 
               <span className="booking-tag">
                 Guest Favorite
@@ -127,17 +138,13 @@ function Booking() {
 
           <div className="input-group">
 
-            <label>
-              Check In
-            </label>
+            <label>Check In</label>
 
             <input
               type="date"
               value={checkIn}
               onChange={(e) =>
-                setCheckIn(
-                  e.target.value
-                )
+                setCheckIn(e.target.value)
               }
             />
 
@@ -145,17 +152,13 @@ function Booking() {
 
           <div className="input-group">
 
-            <label>
-              Check Out
-            </label>
+            <label>Check Out</label>
 
             <input
               type="date"
               value={checkOut}
               onChange={(e) =>
-                setCheckOut(
-                  e.target.value
-                )
+                setCheckOut(e.target.value)
               }
             />
 
@@ -163,32 +166,24 @@ function Booking() {
 
           <div className="input-group">
 
-            <label>
-              Guests
-            </label>
+            <label>Guests</label>
 
             <div className="guest-counter">
 
               <button
                 onClick={() =>
                   guests > 1 &&
-                  setGuests(
-                    guests - 1
-                  )
+                  setGuests(guests - 1)
                 }
               >
                 −
               </button>
 
-              <span>
-                {guests}
-              </span>
+              <span>{guests}</span>
 
               <button
                 onClick={() =>
-                  setGuests(
-                    guests + 1
-                  )
+                  setGuests(guests + 1)
                 }
               >
                 +
@@ -202,51 +197,27 @@ function Booking() {
 
         <div className="price-card">
 
-          <h2>
-            Price Details
-          </h2>
+          <h2>Price Details</h2>
 
           <div className="price-row">
-
-            <span>
-              Stay Price
-            </span>
-
-            <span>
-              ₹{property.price}
-            </span>
-
+            <span>Stay Price</span>
+            <span>₹{property.price}</span>
           </div>
 
           <div className="price-row">
-
-            <span>
-              Service Fee
-            </span>
-
-            <span>
-              ₹{serviceFee}
-            </span>
-
+            <span>Service Fee</span>
+            <span>₹{serviceFee}</span>
           </div>
 
           <hr />
 
           <div className="price-row total">
-
-            <span>
-              Total
-            </span>
-
-            <span>
-              ₹{total}
-            </span>
-
+            <span>Total</span>
+            <span>₹{total}</span>
           </div>
 
           <div className="booking-id-preview">
-            Booking ID will be
-            generated automatically
+            Booking ID will be generated automatically
           </div>
 
           <button

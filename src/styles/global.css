@@ -35,22 +35,17 @@ html {
 }
 
 body {
-      font-family: "Nunito", sans-serif;
+  font-family: "Nunito", sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
   font-size: 14px;
   overflow-x: hidden;
-
 }
-
-
 
 section {
   padding: 35px 60px;
 }
-
-/
 
 h1 {
   font-size: 38px;

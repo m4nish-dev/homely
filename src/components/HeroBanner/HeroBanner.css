@@ -1,7 +1,7 @@
 .hero-banner {
   height: 480px;
 
-  margin: 35px 60px;
+  margin: 50px 60px 35px;
 
   border-radius: 32px;
 
@@ -11,8 +11,8 @@
 
   background-image:
     linear-gradient(
-      rgba(0,0,0,0.35),
-      rgba(0,0,0,0.35)
+      rgba(0, 0, 0, 0.35),
+      rgba(0, 0, 0, 0.35)
     ),
     url("https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600");
 
@@ -77,9 +77,4 @@
 
 .hero-content button:hover {
   transform: translateY(-2px);
-}
-margin-top: 18px;
-
-.hero-banner {
-  margin-top: 50px;
 }
