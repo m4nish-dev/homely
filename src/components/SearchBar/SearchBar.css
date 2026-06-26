@@ -1,28 +1,23 @@
 .searchbar-wrapper {
   display: flex;
   justify-content: center;
-
-  padding: 24px 0 32px;
-
+  padding: 8px 0 26px;
   background: #e8e5dc;
+  transition: all 0.35s ease;
+}
 
-  border-bottom: 1px solid #ece8df;
+.searchbar-wrapper-scrolled {
+  padding: 4px 0 14px;
 }
 
 .searchbar {
   width: 980px;
-
   background: #ffffff;
-
   border-radius: 999px;
-
   display: flex;
   align-items: center;
-
   padding: 8px;
-
   transition: all 0.35s ease;
-
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.06),
     0 1px 2px rgba(0, 0, 0, 0.04);
@@ -30,17 +25,13 @@
 
 .search-section {
   flex: 1;
-
   display: flex;
   flex-direction: column;
-
   padding: 12px 22px;
-
   border-radius: 999px;
-
   transition: all 0.25s ease;
-
   cursor: pointer;
+  position: relative;
 }
 
 .search-section:hover {
@@ -49,29 +40,19 @@
 
 .search-section label {
   font-size: 11px;
-
   font-weight: 800;
-
   text-transform: uppercase;
-
   letter-spacing: 0.5px;
-
   color: #2f3a2f;
-
   margin-bottom: 4px;
 }
 
 .search-section input {
   border: none;
-
   outline: none;
-
   background: transparent;
-
   font-size: 14px;
-
   font-weight: 500;
-
   color: #374151;
 }
 
@@ -82,28 +63,19 @@
 .divider {
   width: 1px;
   height: 42px;
-
   background: #ece8df;
 }
 
 .search-icon {
   width: 56px;
   height: 56px;
-
   border: none;
-
   border-radius: 50%;
-
   background: #d89b4a;
-
   color: white;
-
   font-size: 16px;
-
   cursor: pointer;
-
   transition: all 0.3s ease;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,7 +83,6 @@
 
 .search-icon:hover {
   background: #c78634;
-
   transform: scale(1.06);
 }
 
@@ -120,32 +91,14 @@
 }
 
 /* ========================= */
-/* STICKY AIRBNB EFFECT */
+/* SMALL STICKY SEARCH */
 /* ========================= */
 
 .searchbar-small {
-  position: fixed;
-
-  top: 14px;
-
-  left: 50%;
-
-  transform: translateX(-50%);
-
   width: 500px;
-
   height: 64px;
-
   padding: 6px 10px;
-
-  z-index: 9999;
-
-  background: white;
-
   border: 1px solid #ece8df;
-
-  animation: slideDown 0.3s ease;
-
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.12),
     0 3px 8px rgba(0, 0, 0, 0.05);
@@ -153,70 +106,240 @@
 
 .compact-search {
   width: 100%;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   gap: 16px;
 }
 
 .compact-search span {
   font-size: 14px;
-
   font-weight: 600;
-
   color: #2f3a2f;
-
   white-space: nowrap;
 }
 
 .compact-divider {
   width: 1px;
   height: 18px;
-
   background: #d1d5db;
 }
 
 .searchbar-small .search-icon {
   width: 42px;
   height: 42px;
-
   margin-left: auto;
-
   font-size: 13px;
 }
 
-@keyframes slideDown {
+/* ========================= */
+/* LOCATION POPUP */
+/* ========================= */
+
+.location-section {
+  position: relative;
+}
+
+.location-popup {
+  position: absolute;
+  top: 78px;
+  left: 0;
+  width: 260px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  animation: fadeInUp 0.25s ease;
+}
+
+.location-popup h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2f3a2f;
+  margin-bottom: 12px;
+}
+
+.location-option {
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+  transition: all 0.25s ease;
+}
+
+.location-option:hover {
+  background: #f8f8f5;
+  color: #2f3a2f;
+}
+
+/* ========================= */
+/* GUEST POPUP */
+/* ========================= */
+
+.guest-section {
+  position: relative;
+}
+
+.guest-popup {
+  position: absolute;
+  top: 78px;
+  right: 0;
+  width: 320px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  animation: fadeInUp 0.25s ease;
+}
+
+.guest-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #ececec;
+}
+
+.guest-row:last-child {
+  border-bottom: none;
+}
+
+.guest-row h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2f3a2f;
+  margin-bottom: 4px;
+}
+
+.guest-row p {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.guest-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.guest-controls button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  background: white;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.guest-controls button:hover {
+  border-color: #2f3a2f;
+  color: #2f3a2f;
+}
+
+.guest-controls span {
+  min-width: 18px;
+  text-align: center;
+  font-weight: 700;
+  color: #2f3a2f;
+}
+
+/* ========================= */
+/* ANIMATION */
+/* ========================= */
+
+@keyframes fadeInUp {
   from {
     opacity: 0;
-
-    transform:
-      translateX(-50%)
-      translateY(-20px);
+    transform: translateY(10px);
   }
 
   to {
     opacity: 1;
-
-    transform:
-      translateX(-50%)
-      translateY(0);
+    transform: translateY(0);
   }
 }
 
-/* Responsive */
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width: 1100px) {
+  .searchbar {
+    width: 92%;
+  }
+
+  .searchbar-small {
+    width: 480px;
+  }
+}
 
 @media (max-width: 768px) {
+  .searchbar-wrapper {
+    padding: 6px 0 16px;
+  }
+
   .searchbar {
-    width: 95%;
+    width: 94%;
+    overflow-x: auto;
   }
 
   .searchbar-small {
     width: 92%;
+    height: auto;
+    min-height: 60px;
+  }
+
+  .compact-search {
+    gap: 10px;
   }
 
   .compact-search span {
     font-size: 12px;
   }
+
+  .location-popup,
+  .guest-popup {
+    width: 100%;
+    min-width: 260px;
+  }
+}
+.searchbar-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 14px 0 26px;   /* increased top gap */
+  background: #e8e5dc;
+  transition: all 0.35s ease;
+}
+.searchbar-wrapper-scrolled {
+  padding: 8px 0 14px;
+}
+.searchbar-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 14px 0 26px;
+  background: #e8e5dc;
+  transition: all 0.35s ease;
+}
+
+.searchbar-wrapper-scrolled {
+  padding: 8px 0 14px;
+}
+.searchbar-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 14px 0 26px;
+  background: #e8e5dc;
+  transition: all 0.35s ease;
+  border-bottom: 1px solid rgba(47, 58, 47, 0.08);
+}
+
+.searchbar-wrapper-scrolled {
+  padding: 8px 0 14px;
+  border-bottom: 1px solid rgba(47, 58, 47, 0.08);
 }

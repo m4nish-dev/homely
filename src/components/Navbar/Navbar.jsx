@@ -9,18 +9,21 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 
-function Navbar() {
+function Navbar({
+  setShowLogin,
+  isScrolled,
+}) {
   return (
-    <nav className="navbar">
-
+    <nav
+      className={`navbar ${
+        isScrolled ? "navbar-scrolled" : ""
+      }`}
+    >
       <div className="navbar-left">
-        <h2 className="logo">
-          Homely
-        </h2>
+        <h2 className="logo">Homely</h2>
       </div>
 
       <div className="navbar-center">
-
         <div className="nav-item active">
           <FaHotel />
           <span>Hotels</span>
@@ -35,11 +38,9 @@ function Navbar() {
           <FaHome />
           <span>Villas</span>
         </div>
-
       </div>
 
       <div className="navbar-right">
-
         <button className="host-btn">
           Become a Host
         </button>
@@ -48,13 +49,14 @@ function Navbar() {
           <FaGlobe />
         </div>
 
-        <div className="menu-profile">
+        <div
+          className="menu-profile"
+          onClick={() => setShowLogin(true)}
+        >
           <FaBars />
           <FaUserCircle />
         </div>
-
       </div>
-
     </nav>
   );
 }

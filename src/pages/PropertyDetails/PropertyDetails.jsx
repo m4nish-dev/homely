@@ -113,8 +113,6 @@ function PropertyDetails() {
         </div>
       </div>
 
-      {/* AIRBNB STYLE GALLERY */}
-
       <div className="property-gallery">
 
         <div className="gallery-left">
@@ -273,7 +271,12 @@ function PropertyDetails() {
             <p>✓ Secure Payments</p>
           </div>
 
-          <button className="reserve-btn">
+          <button
+            className="reserve-btn"
+            onClick={() =>
+              navigate(`/booking/${id}`)
+            }
+          >
             Reserve Now
           </button>
 

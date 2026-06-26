@@ -1,92 +1,180 @@
 import "./SearchBar.css";
 import { FaSearch } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-function SearchBar() {
-  const [location, setLocation] = useState("");
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState(1);
+function SearchBar({ isScrolled }) {
+  const navigate = useNavigate();
 
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [location, setLocation] =
+    useState("");
+
+  const [checkIn, setCheckIn] =
+    useState("");
+
+  const [checkOut, setCheckOut] =
+    useState("");
+
+  const [adults, setAdults] =
+    useState(1);
+
+  const [children, setChildren] =
+    useState(0);
+
+  const [showLocationPopup, setShowLocationPopup] =
+    useState(false);
+
+  const [showGuestPopup, setShowGuestPopup] =
+    useState(false);
+
+  const locationRef = useRef(null);
+  const guestRef = useRef(null);
+
+  const locations = [
+    "Goa",
+    "Delhi",
+    "Mumbai",
+    "Bangalore",
+  ];
+
+  const totalGuests = adults + children;
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 120);
+    const handleClickOutside = (e) => {
+      if (
+        locationRef.current &&
+        !locationRef.current.contains(e.target)
+      ) {
+        setShowLocationPopup(false);
+      }
+
+      if (
+        guestRef.current &&
+        !guestRef.current.contains(e.target)
+      ) {
+        setShowGuestPopup(false);
+      }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
 
-    return () =>
-      window.removeEventListener(
-        "scroll",
-        handleScroll
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
       );
+    };
   }, []);
 
   const handleSearch = () => {
-    console.log("Location:", location);
-    console.log("Check In:", checkIn);
-    console.log("Check Out:", checkOut);
-    console.log("Guests:", guests);
+    const searchParams =
+      new URLSearchParams();
+
+    if (location) {
+      searchParams.set("location", location);
+    }
+
+    if (checkIn) {
+      searchParams.set("checkIn", checkIn);
+    }
+
+    if (checkOut) {
+      searchParams.set("checkOut", checkOut);
+    }
+
+    searchParams.set("guests", totalGuests);
+
+    navigate(
+      `/search?${searchParams.toString()}`
+    );
   };
 
   return (
-    <div className="searchbar-wrapper">
-
+    <div
+      className={`searchbar-wrapper ${
+        isScrolled
+          ? "searchbar-wrapper-scrolled"
+          : ""
+      }`}
+    >
       <div
         className={`searchbar ${
           isScrolled ? "searchbar-small" : ""
         }`}
       >
-
         {isScrolled ? (
-          <>
-            <div className="compact-search">
+          <div className="compact-search">
+            <span>{location || "Anywhere"}</span>
 
-              <span>
-                {location || "Anywhere"}
-              </span>
+            <div className="compact-divider"></div>
 
-              <div className="compact-divider"></div>
+            <span>
+              {checkIn && checkOut
+                ? `${checkIn} - ${checkOut}`
+                : "Any Week"}
+            </span>
 
-              <span>
-                {checkIn
-                  ? "Any Week"
-                  : "Any Week"}
-              </span>
+            <div className="compact-divider"></div>
 
-              <div className="compact-divider"></div>
+            <span>
+              {totalGuests > 0
+                ? `${totalGuests} Guest${
+                    totalGuests > 1 ? "s" : ""
+                  }`
+                : "Add Guests"}
+            </span>
 
-              <span>
-                {guests
-                  ? `${guests} Guest${
-                      guests > 1 ? "s" : ""
-                    }`
-                  : "Add Guests"}
-              </span>
-
-              <button
-                className="search-icon"
-                onClick={handleSearch}
-              >
-                <FaSearch />
-              </button>
-
-            </div>
-          </>
+            <button
+              className="search-icon"
+              onClick={handleSearch}
+            >
+              <FaSearch />
+            </button>
+          </div>
         ) : (
           <>
-            <div className="search-section">
+            <div
+              className="search-section location-section"
+              ref={locationRef}
+            >
               <label>Where</label>
+
               <input
                 type="text"
                 placeholder="Search destinations"
                 value={location}
-                onChange={(e) =>
-                  setLocation(e.target.value)
-                }
+                readOnly
+                onClick={() => {
+                  setShowLocationPopup(
+                    !showLocationPopup
+                  );
+                  setShowGuestPopup(false);
+                }}
               />
+
+              {showLocationPopup && (
+                <div className="location-popup">
+                  <h4>
+                    Popular Destinations
+                  </h4>
+
+                  {locations.map((place) => (
+                    <div
+                      key={place}
+                      className="location-option"
+                      onClick={() => {
+                        setLocation(place);
+                        setShowLocationPopup(false);
+                      }}
+                    >
+                      {place}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="divider"></div>
@@ -117,16 +205,91 @@ function SearchBar() {
 
             <div className="divider"></div>
 
-            <div className="search-section">
+            <div
+              className="search-section guest-section"
+              ref={guestRef}
+            >
               <label>Guests</label>
+
               <input
-                type="number"
-                min="1"
-                value={guests}
-                onChange={(e) =>
-                  setGuests(e.target.value)
-                }
+                type="text"
+                readOnly
+                value={`${totalGuests} Guest${
+                  totalGuests > 1 ? "s" : ""
+                }`}
+                onClick={() => {
+                  setShowGuestPopup(
+                    !showGuestPopup
+                  );
+                  setShowLocationPopup(false);
+                }}
               />
+
+              {showGuestPopup && (
+                <div className="guest-popup">
+                  <div className="guest-row">
+                    <div>
+                      <h4>Adults</h4>
+                      <p>
+                        Ages 13 or above
+                      </p>
+                    </div>
+
+                    <div className="guest-controls">
+                      <button
+                        onClick={() =>
+                          adults > 1 &&
+                          setAdults(adults - 1)
+                        }
+                      >
+                        −
+                      </button>
+
+                      <span>{adults}</span>
+
+                      <button
+                        onClick={() =>
+                          setAdults(adults + 1)
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="guest-row">
+                    <div>
+                      <h4>Children</h4>
+                      <p>Ages 2–12</p>
+                    </div>
+
+                    <div className="guest-controls">
+                      <button
+                        onClick={() =>
+                          children > 0 &&
+                          setChildren(
+                            children - 1
+                          )
+                        }
+                      >
+                        −
+                      </button>
+
+                      <span>{children}</span>
+
+                      <button
+                        onClick={() =>
+                          setChildren(
+                            children + 1
+                          )
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <button
@@ -138,7 +301,6 @@ function SearchBar() {
           </>
         )}
       </div>
-
     </div>
   );
 }
