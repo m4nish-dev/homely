@@ -4,7 +4,7 @@
 
 .destinations {
   padding: 100px 60px;
-  background: white; /* Clean background to match Airbnb */
+  background: white; /* Clean background */
 }
 
 /* ========================= */
@@ -13,143 +13,110 @@
 
 .destinations .section-header {
   text-align: left;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .destinations h2 {
   font-size: 32px;
-  margin-bottom: 4px;
+  font-weight: 700;
+  color: #222222;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.destinations p {
+  font-size: 16px;
+  color: #717171;
+  font-weight: 400;
 }
 
 /* ========================= */
-/* WRAPPER */
+/* BENTO GRID */
 /* ========================= */
 
-.destinations-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-/* Scroll Container */
-.destinations-scroll {
-  display: flex;
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 320px);
   gap: 20px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 10px 0 20px;
-  /* Hide scrollbar */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.destinations-scroll::-webkit-scrollbar {
-  display: none;
-}
-
-/* ========================= */
-/* CARD */
-/* ========================= */
-
-.city-card {
-  flex: 0 0 auto;
-  width: 220px; /* Thinner, portrait style */
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Inner Wrapper */
-.city-img-wrap {
-  position: relative;
   width: 100%;
-  aspect-ratio: 4 / 5; /* Modern portrait orientation */
-  border-radius: 16px;
-  overflow: hidden;
 }
 
-.city-img-wrap img {
+.bento-item {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #f0f0f0; /* Fallback */
+}
+
+.bento-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.city-card:hover .city-img-wrap img {
-  transform: scale(1.08);
+.bento-item:hover img {
+  transform: scale(1.05);
 }
 
-/* Gradient Overlay */
-.city-overlay {
+/* Dark gradient overlay at the bottom for text readability */
+.bento-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0) 40%,
-    rgba(0, 0, 0, 0.6) 100%
+    rgba(0,0,0,0) 40%,
+    rgba(0,0,0,0.6) 100%
   );
   z-index: 1;
+  pointer-events: none;
 }
 
-/* Text Container over image */
-.city-info {
+/* Text Container */
+.bento-info {
   position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
+  bottom: 24px;
+  left: 24px;
   z-index: 2;
+  color: white;
+  pointer-events: none;
 }
 
-.city-name {
+.bento-name {
   display: block;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  color: white;
   margin-bottom: 2px;
 }
 
-.city-stays {
-  font-size: 13px;
+.bento-stays {
+  font-size: 14px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
 }
 
 /* ========================= */
-/* ARROWS */
+/* BENTO GRID PLACEMENTS */
 /* ========================= */
+/*
+  Row 1: Col 1-2 (City 0), Col 3 (City 1), Col 4 (City 2)
+  Row 2: Col 1 (City 3), Col 2 (City 4), Col 3-4 (City 5)
+*/
 
-.dest-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: white;
-  border: 1px solid var(--border, #e4e0d7);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  color: var(--text, #1a2214);
-}
+.bento-item-0 { grid-column: span 2; }
+.bento-item-1 { grid-column: span 1; }
+.bento-item-2 { grid-column: span 1; }
+.bento-item-3 { grid-column: span 1; }
+.bento-item-4 { grid-column: span 1; }
+.bento-item-5 { grid-column: span 2; }
 
-.dest-arrow:hover {
-  transform: translateY(-50%) scale(1.08);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
-.dest-arrow.left {
-  left: -20px;
-}
-
-.dest-arrow.right {
-  right: -20px;
+/* Make the big items have bigger text */
+.bento-item-0 .bento-name,
+.bento-item-5 .bento-name {
+  font-size: 32px;
 }
 
 /* ========================= */
@@ -160,18 +127,32 @@
   .destinations {
     padding: 80px 24px;
   }
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 300px);
+  }
+  .bento-item-0 { grid-column: span 2; } /* Full width */
+  .bento-item-1 { grid-column: span 1; }
+  .bento-item-2 { grid-column: span 1; }
+  .bento-item-3 { grid-column: span 1; }
+  .bento-item-4 { grid-column: span 1; }
+  .bento-item-5 { grid-column: span 2; } /* Full width */
 }
 
 @media (max-width: 600px) {
   .destinations {
     padding: 60px 16px;
   }
-
-  .city-card {
-    width: 160px;
+  .bento-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, 250px);
   }
-
-  .dest-arrow {
-    display: none; /* Rely on native swipe on mobile */
+  .bento-item-0,
+  .bento-item-1,
+  .bento-item-2,
+  .bento-item-3,
+  .bento-item-4,
+  .bento-item-5 {
+    grid-column: span 1; /* All full width */
   }
 }
