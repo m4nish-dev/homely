@@ -77,115 +77,119 @@ function Testimonials() {
   return (
     <section className="testimonials">
       <div className="testi-inner">
-        <div className="testi-header">
-          <span className="testi-eyebrow">What Our Guests Say</span>
-          <h2>Loved by Millions of Travelers</h2>
-          <p>Real reviews from real guests. No filters, no fabrications.</p>
-        </div>
-
-        {/* Rating Overview */}
-        <div className="testi-overview">
-          <div className="testi-big-rating">
-            <span className="testi-score">4.9</span>
-            <div>
-              <div className="testi-stars">
-                {[...Array(5)].map((_, i) => <FaStar key={i} />)}
-              </div>
-              <p>Based on 50,000+ reviews</p>
-            </div>
+        <div className="testi-left">
+          <div className="testi-header">
+            <span className="testi-eyebrow">What Our Guests Say</span>
+            <h2>Loved by Millions of Travelers</h2>
+            <p>Real reviews from real guests. No filters, no fabrications.</p>
           </div>
 
-          <div className="testi-bars">
-            {[
-              { label: "5 Stars", pct: 92 },
-              { label: "4 Stars", pct: 6 },
-              { label: "3 Stars", pct: 2 },
-            ].map((b) => (
-              <div className="testi-bar-row" key={b.label}>
-                <span>{b.label}</span>
-                <div className="testi-bar-track">
-                  <div className="testi-bar-fill" style={{ width: `${b.pct}%` }} />
+          {/* Rating Overview */}
+          <div className="testi-overview">
+            <div className="testi-big-rating">
+              <span className="testi-score">4.9</span>
+              <div>
+                <div className="testi-stars">
+                  {[...Array(5)].map((_, i) => <FaStar key={i} />)}
                 </div>
-                <span>{b.pct}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Cards Carousel */}
-        <div className="testi-carousel">
-          {/* Side cards (decorative) */}
-          <div className="testi-card testi-card-side left" onClick={prev}>
-            <FaQuoteLeft className="testi-quote" />
-            <p>{getCard(-1).text.slice(0, 80)}…</p>
-            <div className="testi-reviewer">
-              <div className="testi-avatar" style={{ background: getCard(-1).color }}>
-                {getCard(-1).avatar}
-              </div>
-              <div>
-                <strong>{getCard(-1).name}</strong>
-                <span>{getCard(-1).location}</span>
+                <p>Based on 50,000+ reviews</p>
               </div>
             </div>
-          </div>
 
-          {/* Main card */}
-          <div className="testi-card testi-card-main">
-            <FaQuoteLeft className="testi-quote" />
-            <div className="testi-stars main-stars">
-              {[...Array(testimonials[current].rating)].map((_, i) => <FaStar key={i} />)}
-            </div>
-            <p className="testi-text">{testimonials[current].text}</p>
-            <div className="testi-reviewer">
-              <div className="testi-avatar large" style={{ background: testimonials[current].color }}>
-                {testimonials[current].avatar}
-              </div>
-              <div>
-                <strong>{testimonials[current].name}</strong>
-                <span>{testimonials[current].location}</span>
-                <span className="testi-property">{testimonials[current].property}</span>
-              </div>
-            </div>
-            <div className="testi-date">{testimonials[current].date}</div>
-          </div>
-
-          {/* Side card right */}
-          <div className="testi-card testi-card-side right" onClick={next}>
-            <FaQuoteLeft className="testi-quote" />
-            <p>{getCard(1).text.slice(0, 80)}…</p>
-            <div className="testi-reviewer">
-              <div className="testi-avatar" style={{ background: getCard(1).color }}>
-                {getCard(1).avatar}
-              </div>
-              <div>
-                <strong>{getCard(1).name}</strong>
-                <span>{getCard(1).location}</span>
-              </div>
+            <div className="testi-bars">
+              {[
+                { label: "5 Stars", pct: 92 },
+                { label: "4 Stars", pct: 6 },
+                { label: "3 Stars", pct: 2 },
+              ].map((b) => (
+                <div className="testi-bar-row" key={b.label}>
+                  <span>{b.label}</span>
+                  <div className="testi-bar-track">
+                    <div className="testi-bar-fill" style={{ width: `${b.pct}%` }} />
+                  </div>
+                  <span>{b.pct}%</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="testi-controls">
-          <button className="testi-arrow" onClick={prev} aria-label="Previous">
-            <FaChevronLeft />
-          </button>
-          <div className="testi-dots">
-            {testimonials.map((_, i) => (
-              <button
-                key={i}
-                className={`testi-dot ${i === current ? "active" : ""}`}
-                onClick={() => setCurrent(i)}
-              >
-                {i === current && (
-                  <div key={current} className="testi-dot-progress" />
-                )}
-              </button>
-            ))}
+        <div className="testi-right">
+          {/* Cards Carousel */}
+          <div className="testi-carousel">
+            {/* Side cards (decorative) */}
+            <div className="testi-card testi-card-side left" onClick={prev}>
+              <FaQuoteLeft className="testi-quote" />
+              <p>{getCard(-1).text.slice(0, 80)}…</p>
+              <div className="testi-reviewer">
+                <div className="testi-avatar" style={{ background: getCard(-1).color }}>
+                  {getCard(-1).avatar}
+                </div>
+                <div>
+                  <strong>{getCard(-1).name}</strong>
+                  <span>{getCard(-1).location}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Main card */}
+            <div className="testi-card testi-card-main">
+              <FaQuoteLeft className="testi-quote" />
+              <div className="testi-stars main-stars">
+                {[...Array(testimonials[current].rating)].map((_, i) => <FaStar key={i} />)}
+              </div>
+              <p className="testi-text">{testimonials[current].text}</p>
+              <div className="testi-reviewer">
+                <div className="testi-avatar large" style={{ background: testimonials[current].color }}>
+                  {testimonials[current].avatar}
+                </div>
+                <div>
+                  <strong>{testimonials[current].name}</strong>
+                  <span>{testimonials[current].location}</span>
+                  <span className="testi-property">{testimonials[current].property}</span>
+                </div>
+              </div>
+              <div className="testi-date">{testimonials[current].date}</div>
+            </div>
+
+            {/* Side card right */}
+            <div className="testi-card testi-card-side right" onClick={next}>
+              <FaQuoteLeft className="testi-quote" />
+              <p>{getCard(1).text.slice(0, 80)}…</p>
+              <div className="testi-reviewer">
+                <div className="testi-avatar" style={{ background: getCard(1).color }}>
+                  {getCard(1).avatar}
+                </div>
+                <div>
+                  <strong>{getCard(1).name}</strong>
+                  <span>{getCard(1).location}</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <button className="testi-arrow" onClick={next} aria-label="Next">
-            <FaChevronRight />
-          </button>
+
+          {/* Controls */}
+          <div className="testi-controls">
+            <button className="testi-arrow" onClick={prev} aria-label="Previous">
+              <FaChevronLeft />
+            </button>
+            <div className="testi-dots">
+              {testimonials.map((_, i) => (
+                <button
+                  key={i}
+                  className={`testi-dot ${i === current ? "active" : ""}`}
+                  onClick={() => setCurrent(i)}
+                >
+                  {i === current && (
+                    <div key={current} className="testi-dot-progress" />
+                  )}
+                </button>
+              ))}
+            </div>
+            <button className="testi-arrow" onClick={next} aria-label="Next">
+              <FaChevronRight />
+            </button>
+          </div>
         </div>
       </div>
     </section>

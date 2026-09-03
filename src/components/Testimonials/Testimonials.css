@@ -8,6 +8,10 @@
 }
 
 .testi-inner {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 80px;
+  align-items: center;
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -17,8 +21,8 @@
 /* ========================= */
 
 .testi-header {
-  text-align: center;
-  margin-bottom: 50px;
+  text-align: left;
+  margin-bottom: 40px;
 }
 
 .testi-eyebrow {
@@ -30,7 +34,7 @@
   color: var(--primary, #d89b4a);
   background: rgba(216, 155, 74, 0.1);
   border: 1px solid rgba(216, 155, 74, 0.2);
-  padding: 32px 16px;
+  padding: 6px 14px; /* Fixed padded button look */
   border-radius: 999px;
   margin-bottom: 14px;
 }
@@ -54,20 +58,21 @@
 
 .testi-overview {
   display: flex;
-  align-items: center;
-  gap: 50px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
   background: white;
   border-radius: 24px;
-  padding: 28px 36px;
-  margin-bottom: 50px;
+  padding: 32px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--border-light, #f0ede6);
 }
 
 .testi-big-rating {
   display: flex;
-  align-items: center;
-  gap: 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   flex-shrink: 0;
 }
 
@@ -94,7 +99,7 @@
 }
 
 .testi-bars {
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -143,7 +148,7 @@
 
 .testi-carousel {
   display: grid;
-  grid-template-columns: 1fr 1.6fr 1fr;
+  grid-template-columns: 1fr 2fr 1fr;
   gap: 20px;
   align-items: center;
   margin-bottom: 36px;
@@ -346,6 +351,11 @@
     padding: 40px 24px;
   }
 
+  .testi-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
   .testi-carousel {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -356,9 +366,10 @@
   }
 
   .testi-overview {
-    flex-direction: column;
-    gap: 24px;
-    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
   }
 }
 
