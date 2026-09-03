@@ -3,7 +3,9 @@
 /* ========================= */
 
 .listings {
-  padding: 80px 60px;
+  padding: 48px 60px;
+  max-width: 1440px;
+  margin: 0 auto;
   background: white;
 }
 
@@ -325,12 +327,12 @@
 
 @media (max-width: 1000px) {
   .listings {
-    padding: 60px 24px;
+    padding: 40px 24px;
   }
 }
 
 @media (max-width: 600px) {
   .listings {
-    padding: 40px 16px;
+    padding: 32px 16px;
   }
 }

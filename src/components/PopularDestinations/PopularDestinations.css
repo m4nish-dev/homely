@@ -3,7 +3,9 @@
 /* ========================= */
 
 .destinations {
-  padding: 100px 60px;
+  padding: 96px 60px 48px 60px;
+  max-width: 1440px;
+  margin: 0 auto;
   background: white; /* Clean background */
 }
 
@@ -125,7 +127,7 @@
 
 @media (max-width: 1000px) {
   .destinations {
-    padding: 80px 24px;
+    padding: 40px 24px;
   }
   .bento-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -141,7 +143,7 @@
 
 @media (max-width: 600px) {
   .destinations {
-    padding: 60px 16px;
+    padding: 32px 16px;
   }
   .bento-grid {
     grid-template-columns: 1fr;

@@ -3,12 +3,12 @@
 /* ========================= */
 
 .why-choose {
-  padding: 100px 60px;
+  padding: 48px 60px;
   background: #ffffff; /* Very clean white background */
 }
 
 .wc-inner {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
@@ -251,7 +251,7 @@
 
 @media (max-width: 1000px) {
   .why-choose {
-    padding: 80px 24px;
+    padding: 40px 24px;
   }
   
   .wc-bento {
@@ -276,7 +276,7 @@
 
 @media (max-width: 600px) {
   .why-choose {
-    padding: 60px 16px;
+    padding: 32px 16px;
   }
 
   .wc-header h2 {

@@ -40,8 +40,8 @@
 
 .hero-banner {
   position: relative;
-  height: 85vh; /* Massive immersive height */
-  min-height: 600px;
+  height: 92vh; /* Massive immersive height */
+  min-height: 700px;
   width: 100%;
   overflow: hidden;
   /* Removed margins and border-radius so it bleeds to edges */
