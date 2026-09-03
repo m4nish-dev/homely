@@ -6,19 +6,19 @@ import SearchBar from "../SearchBar/SearchBar";
 
 const slides = [
   {
-    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&q=80",
+    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=2400&q=90",
     label: "Luxury Escapes",
     title: "Find Your Perfect Stay",
     subtitle: "Discover premium hotels, villas and resorts across India.",
   },
   {
-    image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1600&q=80",
+    image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=2400&q=90",
     label: "Beach Retreats",
     title: "Wake Up to the Ocean",
     subtitle: "Handpicked beachside stays for unforgettable memories.",
   },
   {
-    image: "https://images.unsplash.com/photo-1518002054494-3a6f94352e9d?w=1600&q=80",
+    image: "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=2400&q=90",
     label: "Mountain Hideaways",
     title: "Escape to the Mountains",
     subtitle: "Cozy cabins and scenic retreats in the heart of nature.",

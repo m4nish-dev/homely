@@ -54,13 +54,13 @@
   background-size: cover;
   background-position: center;
   opacity: 0;
-  transform: scale(1.05);
-  transition: opacity 1.5s ease, transform 6s linear; /* Slow zoom effect */
+  transform: scale(1);
+  transition: opacity 1.2s ease-in-out, transform 8s linear;
 }
 
 .hero-slide.active {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1.1); /* Slow cinematic zoom in */
 }
 
 /* Overlay gradient */
