@@ -1,42 +1,63 @@
 import "./GuestFavorites.css";
+import { useNavigate } from "react-router-dom";
+import { FaStar, FaArrowRight } from "react-icons/fa";
 
 function GuestFavorites() {
+  const navigate = useNavigate();
+
   const favorites = [
     {
       id: 1,
       name: "The Grand Palace",
       location: "Mumbai",
       rating: 4.9,
-      image:
-        "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800",
+      reviews: 312,
+      price: "₹8,499",
+      tag: "🏆 Traveler Choice",
+      image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
     },
     {
       id: 2,
       name: "Ocean View Resort",
       location: "Goa",
       rating: 4.8,
-      image:
-        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800",
+      reviews: 245,
+      price: "₹6,999",
+      tag: "🌊 Beachfront",
+      image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80",
     },
     {
       id: 3,
       name: "Mountain Escape",
       location: "Manali",
       rating: 4.7,
-      image:
-        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800",
+      reviews: 178,
+      price: "₹5,499",
+      tag: "🏔️ Scenic View",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80",
+    },
+    {
+      id: 4,
+      name: "Heritage Palace",
+      location: "Jaipur",
+      rating: 4.9,
+      reviews: 420,
+      price: "₹9,999",
+      tag: "🏆 Traveler Choice",
+      image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800&q=80",
     },
   ];
 
   return (
     <section className="favorites">
-
-      <div className="section-header">
-        <h2>Top Rated Properties</h2>
-
-        <p>
-          Loved by thousands of travelers across India.
-        </p>
+      <div className="favorites-header">
+        <div>
+          <h2>Top Rated Properties</h2>
+          <p>Loved by thousands of travelers across India.</p>
+        </div>
+        <button className="view-all-btn" onClick={() => navigate("/search")}>
+          View All <FaArrowRight />
+        </button>
       </div>
 
       <div className="favorites-grid">
@@ -44,32 +65,28 @@ function GuestFavorites() {
           <div
             className="favorite-card"
             key={hotel.id}
+            onClick={() => navigate(`/property/${hotel.id}`)}
           >
-            <div className="image-wrapper">
-
-              <img
-                src={hotel.image}
-                alt={hotel.name}
-              />
-
-              <div className="traveler-badge">
-                🏆 Traveler Choice
-              </div>
-
+            <div className="fav-image-wrap">
+              <img src={hotel.image} alt={hotel.name} loading="lazy" />
+              <div className="fav-overlay" />
+              <div className="fav-tag">{hotel.tag}</div>
             </div>
 
-            <div className="favorite-info">
-
-              <div className="favorite-top">
+            <div className="fav-info">
+              <div className="fav-top">
                 <h3>{hotel.name}</h3>
-
-                <span className="rating">
-                  ⭐ {hotel.rating}
+                <span className="fav-rating">
+                  <FaStar /> {hotel.rating}
                 </span>
               </div>
-
-              <p>{hotel.location}</p>
-
+              <p className="fav-location">📍 {hotel.location}</p>
+              <div className="fav-bottom">
+                <span className="fav-reviews">{hotel.reviews} reviews</span>
+                <span className="fav-price">
+                  {hotel.price}<span className="fav-night"> /night</span>
+                </span>
+              </div>
             </div>
           </div>
         ))}
