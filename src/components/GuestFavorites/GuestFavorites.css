@@ -45,13 +45,36 @@
 }
 
 /* ========================= */
-/* GRID */
+/* MARQUEE */
 /* ========================= */
 
-.favorites-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
+.favorites-marquee-container {
+  overflow: hidden;
+  width: calc(100% + 120px);
+  margin-left: -60px; /* Offset section padding so it bleeds to edges */
+  padding: 10px 0 40px 0;
+}
+
+.favorites-marquee-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  /* 4 cards * (300px width + 24px gap) = 1296px */
+  /* User requested left to right movement */
+  animation: scrollMarquee 25s linear infinite;
+}
+
+.favorites-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-1296px);
+  }
 }
 
 /* ========================= */
@@ -59,6 +82,8 @@
 /* ========================= */
 
 .favorite-card {
+  width: 300px; /* Fixed width for marquee */
+  flex-shrink: 0;
   background: white;
   border-radius: 20px;
   overflow: hidden;
@@ -187,8 +212,9 @@
     padding: 40px 24px;
   }
 
-  .favorites-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .favorites-marquee-container {
+    width: calc(100% + 48px);
+    margin-left: -24px;
   }
 }
 
@@ -197,13 +223,14 @@
     padding: 32px 16px;
   }
 
-  .favorites-grid {
-    grid-template-columns: 1fr;
-  }
-
   .favorites-header {
     flex-direction: column;
     gap: 16px;
     align-items: flex-start;
+  }
+
+  .favorites-marquee-container {
+    width: calc(100% + 32px);
+    margin-left: -16px;
   }
 }

@@ -166,7 +166,13 @@
 .testi-card-side {
   opacity: 0.55;
   transform: scale(0.94);
-  pointer-events: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.testi-card-side:hover {
+  opacity: 0.8;
+  transform: scale(0.96);
 }
 
 .testi-card-main {
@@ -300,20 +306,35 @@
 }
 
 .testi-dot {
+  position: relative;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 999px;
   border: none;
   background: rgba(0, 0, 0, 0.15);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   padding: 0;
+  overflow: hidden;
 }
 
 .testi-dot.active {
+  background: rgba(0, 0, 0, 0.1);
+  width: 36px;
+}
+
+.testi-dot-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
   background: var(--primary, #d89b4a);
-  width: 24px;
-  border-radius: 999px;
+  animation: fillProgress 5s linear forwards;
+}
+
+@keyframes fillProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
 }
 
 /* ========================= */

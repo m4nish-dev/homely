@@ -1,5 +1,5 @@
 import "./Testimonials.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaStar, FaChevronLeft, FaChevronRight, FaQuoteLeft } from "react-icons/fa";
 
 const testimonials = [
@@ -61,6 +61,14 @@ function Testimonials() {
   const prev = () => setCurrent((c) => (c - 1 + testimonials.length) % testimonials.length);
   const next = () => setCurrent((c) => (c + 1) % testimonials.length);
 
+  // Auto-play dynamic reviews
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((c) => (c + 1) % testimonials.length);
+    }, 5000); // 5 seconds per slide
+    return () => clearInterval(timer);
+  }, [current]); // Reset timer if user manually clicks
+
   const getCard = (offset) => {
     const idx = (current + offset + testimonials.length) % testimonials.length;
     return testimonials[idx];
@@ -107,7 +115,7 @@ function Testimonials() {
         {/* Cards Carousel */}
         <div className="testi-carousel">
           {/* Side cards (decorative) */}
-          <div className="testi-card testi-card-side left">
+          <div className="testi-card testi-card-side left" onClick={prev}>
             <FaQuoteLeft className="testi-quote" />
             <p>{getCard(-1).text.slice(0, 80)}…</p>
             <div className="testi-reviewer">
@@ -142,7 +150,7 @@ function Testimonials() {
           </div>
 
           {/* Side card right */}
-          <div className="testi-card testi-card-side right">
+          <div className="testi-card testi-card-side right" onClick={next}>
             <FaQuoteLeft className="testi-quote" />
             <p>{getCard(1).text.slice(0, 80)}…</p>
             <div className="testi-reviewer">
@@ -168,7 +176,11 @@ function Testimonials() {
                 key={i}
                 className={`testi-dot ${i === current ? "active" : ""}`}
                 onClick={() => setCurrent(i)}
-              />
+              >
+                {i === current && (
+                  <div key={current} className="testi-dot-progress" />
+                )}
+              </button>
             ))}
           </div>
           <button className="testi-arrow" onClick={next} aria-label="Next">

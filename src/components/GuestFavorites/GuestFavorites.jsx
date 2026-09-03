@@ -59,37 +59,38 @@ function GuestFavorites() {
           View All <FaArrowRight />
         </button>
       </div>
-
-      <div className="favorites-grid">
-        {favorites.map((hotel) => (
-          <div
-            className="favorite-card"
-            key={hotel.id}
-            onClick={() => navigate(`/property/${hotel.id}`)}
-          >
-            <div className="fav-image-wrap">
-              <img src={hotel.image} alt={hotel.name} loading="lazy" />
-              <div className="fav-overlay" />
-              <div className="fav-tag">{hotel.tag}</div>
-            </div>
-
-            <div className="fav-info">
-              <div className="fav-top">
-                <h3>{hotel.name}</h3>
-                <span className="fav-rating">
-                  <FaStar /> {hotel.rating}
-                </span>
+      <div className="favorites-marquee-container">
+        <div className="favorites-marquee-track">
+          {[...favorites, ...favorites, ...favorites].map((hotel, index) => (
+            <div
+              className="favorite-card"
+              key={`${hotel.id}-${index}`}
+              onClick={() => navigate(`/property/${hotel.id}`)}
+            >
+              <div className="fav-image-wrap">
+                <img src={hotel.image} alt={hotel.name} loading="lazy" />
+                <div className="fav-overlay" />
+                <div className="fav-tag">{hotel.tag}</div>
               </div>
-              <p className="fav-location">📍 {hotel.location}</p>
-              <div className="fav-bottom">
-                <span className="fav-reviews">{hotel.reviews} reviews</span>
-                <span className="fav-price">
-                  {hotel.price}<span className="fav-night"> /night</span>
-                </span>
+
+              <div className="fav-info">
+                <div className="fav-top">
+                  <h3>{hotel.name}</h3>
+                  <span className="fav-rating">
+                    <FaStar /> {hotel.rating}
+                  </span>
+                </div>
+                <p className="fav-location">📍 {hotel.location}</p>
+                <div className="fav-bottom">
+                  <span className="fav-reviews">{hotel.reviews} reviews</span>
+                  <span className="fav-price">
+                    {hotel.price}<span className="fav-night"> /night</span>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

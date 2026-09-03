@@ -1,6 +1,6 @@
 import "./PropertyListings.css";
 import { FaHeart, FaChevronLeft, FaChevronRight, FaStar, FaArrowRight } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function PropertyListings() {
@@ -95,6 +95,22 @@ function PropertyListings() {
     activeFilter === "All"
       ? properties
       : properties.filter((p) => p.category === activeFilter);
+
+  // Auto-play all image carousels automatically
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImages((prev) => {
+        const nextState = { ...prev };
+        filteredProperties.forEach((property) => {
+          const current = nextState[property.id] || 0;
+          nextState[property.id] = (current + 1) % property.images.length;
+        });
+        return nextState;
+      });
+    }, 2500); // Slide every 2.5 seconds for a faster, snappier feel
+
+    return () => clearInterval(timer);
+  }, [filteredProperties]);
 
   const toggleFavorite = (id, e) => {
     e.stopPropagation();
