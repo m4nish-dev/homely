@@ -1,9 +1,8 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./App.css";
 
 import Navbar from "./components/Navbar/Navbar";
-import SearchBar from "./components/SearchBar/SearchBar";
 import HeroBanner from "./components/HeroBanner/HeroBanner";
 import PopularDestinations from "./components/PopularDestinations/PopularDestinations";
 import PropertyListings from "./components/PropertyListings/PropertyListings";
@@ -18,9 +17,19 @@ import PropertyDetails from "./pages/PropertyDetails/PropertyDetails";
 import SearchResults from "./pages/SearchResults/SearchResults";
 import Booking from "./pages/Booking/Booking";
 import BookingSuccess from "./pages/BookingSuccess/BookingSuccess";
+import NotFound from "./pages/NotFound/NotFound";
 
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
+
+// Scroll to top on every route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [pathname]);
+  return null;
+}
 
 function HomePage() {
   const [showLogin, setShowLogin] = useState(false);
@@ -79,13 +88,17 @@ function HomePage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/search" element={<SearchResults />} />
-      <Route path="/property/:id" element={<PropertyDetails />} />
-      <Route path="/booking/:id" element={<Booking />} />
-      <Route path="/booking-success" element={<BookingSuccess />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path="/property/:id" element={<PropertyDetails />} />
+        <Route path="/booking/:id" element={<Booking />} />
+        <Route path="/booking-success" element={<BookingSuccess />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 }
 

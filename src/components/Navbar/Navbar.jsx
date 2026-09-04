@@ -39,7 +39,10 @@ function Navbar({ setShowLogin, isScrolled }) {
             <div
               key={item.label}
               className={`nav-item ${activeCategory === item.label ? "active" : ""}`}
-              onClick={() => setActiveCategory(item.label)}
+              onClick={() => {
+                setActiveCategory(item.label);
+                navigate(`/search?category=${item.label}`);
+              }}
             >
               {item.icon}
               <span>{item.label}</span>

@@ -1,7 +1,7 @@
 import "../Login/Login.css";
 import "./Register.css";
 import { useState } from "react";
-import { FaEye, FaEyeSlash, FaTimes, FaGoogle } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaTimes, FaGoogle, FaCheckCircle } from "react-icons/fa";
 
 function Register({ onClose, onLoginClick }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +12,7 @@ function Register({ onClose, onLoginClick }) {
   const [confirm, setConfirm] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const validate = () => {
     const e = {};
@@ -31,8 +32,8 @@ function Register({ onClose, onLoginClick }) {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      alert("Account created successfully! (Demo mode)");
-      onClose();
+      setSuccess(true);
+      setTimeout(() => onClose(), 1800);
     }, 1200);
   };
 
@@ -41,85 +42,95 @@ function Register({ onClose, onLoginClick }) {
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose} aria-label="Close"><FaTimes /></button>
 
-        <div className="modal-header">
-          <h1>Create Account</h1>
-          <p>Join Homely and discover premium stays across India</p>
-        </div>
-
-        {/* Google */}
-        <button className="google-btn">
-          <FaGoogle />
-          Sign up with Google
-        </button>
-
-        <div className="modal-divider"><span>or</span></div>
-
-        {/* Name */}
-        <div className={`modal-input-group ${errors.name ? "has-error" : ""}`}>
-          <label>Full Name</label>
-          <input
-            type="text"
-            placeholder="e.g. Rahul Sharma"
-            value={name}
-            onChange={(e) => { setName(e.target.value); setErrors((p) => ({ ...p, name: "" })); }}
-          />
-          {errors.name && <span className="modal-error">{errors.name}</span>}
-        </div>
-
-        {/* Email */}
-        <div className={`modal-input-group ${errors.email ? "has-error" : ""}`}>
-          <label>Email Address</label>
-          <input
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: "" })); }}
-          />
-          {errors.email && <span className="modal-error">{errors.email}</span>}
-        </div>
-
-        {/* Password */}
-        <div className={`modal-input-group ${errors.password ? "has-error" : ""}`}>
-          <label>Password</label>
-          <div className="password-box">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="At least 6 characters"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: "" })); }}
-            />
-            <button type="button" className="show-hide-btn" onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
+        {success ? (
+          <div className="modal-success">
+            <FaCheckCircle className="modal-success-icon" />
+            <h2>Account Created! 🎉</h2>
+            <p>Welcome to Homely. You're all set!</p>
           </div>
-          {errors.password && <span className="modal-error">{errors.password}</span>}
-        </div>
+        ) : (
+          <>
+            <div className="modal-header">
+              <h1>Create Account</h1>
+              <p>Join Homely and discover premium stays across India</p>
+            </div>
 
-        {/* Confirm Password */}
-        <div className={`modal-input-group ${errors.confirm ? "has-error" : ""}`}>
-          <label>Confirm Password</label>
-          <div className="password-box">
-            <input
-              type={showConfirm ? "text" : "password"}
-              placeholder="Repeat your password"
-              value={confirm}
-              onChange={(e) => { setConfirm(e.target.value); setErrors((p) => ({ ...p, confirm: "" })); }}
-            />
-            <button type="button" className="show-hide-btn" onClick={() => setShowConfirm(!showConfirm)}>
-              {showConfirm ? <FaEyeSlash /> : <FaEye />}
+            {/* Google */}
+            <button className="google-btn">
+              <FaGoogle />
+              Sign up with Google
             </button>
-          </div>
-          {errors.confirm && <span className="modal-error">{errors.confirm}</span>}
-        </div>
 
-        <button className="modal-submit-btn" onClick={handleRegister} disabled={loading}>
-          {loading ? <span className="btn-spinner" /> : "Create Account"}
-        </button>
+            <div className="modal-divider"><span>or</span></div>
 
-        <p className="modal-switch">
-          Already have an account?
-          <button className="modal-switch-btn" onClick={onLoginClick}>Login</button>
-        </p>
+            {/* Name */}
+            <div className={`modal-input-group ${errors.name ? "has-error" : ""}`}>
+              <label>Full Name</label>
+              <input
+                type="text"
+                placeholder="e.g. Rahul Sharma"
+                value={name}
+                onChange={(e) => { setName(e.target.value); setErrors((p) => ({ ...p, name: "" })); }}
+              />
+              {errors.name && <span className="modal-error">{errors.name}</span>}
+            </div>
+
+            {/* Email */}
+            <div className={`modal-input-group ${errors.email ? "has-error" : ""}`}>
+              <label>Email Address</label>
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: "" })); }}
+              />
+              {errors.email && <span className="modal-error">{errors.email}</span>}
+            </div>
+
+            {/* Password */}
+            <div className={`modal-input-group ${errors.password ? "has-error" : ""}`}>
+              <label>Password</label>
+              <div className="password-box">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="At least 6 characters"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: "" })); }}
+                />
+                <button type="button" className="show-hide-btn" onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              {errors.password && <span className="modal-error">{errors.password}</span>}
+            </div>
+
+            {/* Confirm Password */}
+            <div className={`modal-input-group ${errors.confirm ? "has-error" : ""}`}>
+              <label>Confirm Password</label>
+              <div className="password-box">
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  placeholder="Repeat your password"
+                  value={confirm}
+                  onChange={(e) => { setConfirm(e.target.value); setErrors((p) => ({ ...p, confirm: "" })); }}
+                />
+                <button type="button" className="show-hide-btn" onClick={() => setShowConfirm(!showConfirm)}>
+                  {showConfirm ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              {errors.confirm && <span className="modal-error">{errors.confirm}</span>}
+            </div>
+
+            <button className="modal-submit-btn" onClick={handleRegister} disabled={loading}>
+              {loading ? <span className="btn-spinner" /> : "Create Account"}
+            </button>
+
+            <p className="modal-switch">
+              Already have an account?
+              <button className="modal-switch-btn" onClick={onLoginClick}>Login</button>
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

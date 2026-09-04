@@ -60,8 +60,18 @@ function Footer() {
           <h4>Stay Updated</h4>
           <p>Get exclusive deals and travel inspiration straight to your inbox.</p>
           <div className="newsletter-form">
-            <input type="email" placeholder="Enter your email" />
-            <button>Subscribe</button>
+            <input type="email" id="newsletter-email" placeholder="Enter your email" />
+            <button onClick={() => {
+              const input = document.getElementById("newsletter-email");
+              if (input && input.value && /\S+@\S+\.\S+/.test(input.value)) {
+                input.value = "";
+                input.placeholder = "✓ You're subscribed!";
+                setTimeout(() => { input.placeholder = "Enter your email"; }, 3000);
+              } else if (input) {
+                input.placeholder = "Enter a valid email";
+                setTimeout(() => { input.placeholder = "Enter your email"; }, 2000);
+              }
+            }}>Subscribe</button>
           </div>
         </div>
       </div>

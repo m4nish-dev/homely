@@ -2,6 +2,7 @@ import "./Booking.css";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaStar, FaShieldAlt } from "react-icons/fa";
+import ALL_PROPERTIES from "../../data/properties";
 
 function Booking() {
   const { id } = useParams();
@@ -14,24 +15,19 @@ function Booking() {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
 
-  const properties = {
-    1: { title: "Luxury Villa", location: "Goa, India", rating: 4.9, reviews: 128, price: 5999, image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80" },
-    2: { title: "Modern Flat", location: "Delhi, India", rating: 4.8, reviews: 94, price: 3499, image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80" },
-    3: { title: "Beach Resort", location: "Kerala, India", rating: 4.7, reviews: 213, price: 7999, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80" },
-    4: { title: "Mountain Cabin", location: "Manali, India", rating: 4.9, reviews: 76, price: 4999, image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" },
-    5: { title: "Heritage Haveli", location: "Jaipur, India", rating: 4.8, reviews: 155, price: 6499, image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800&q=80" },
-    6: { title: "Lake View Suite", location: "Udaipur, India", rating: 4.9, reviews: 89, price: 8999, image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&q=80" },
-  };
-
-  const property = properties[id];
+  const property = ALL_PROPERTIES.find((p) => p.id === parseInt(id));
   const today = new Date().toISOString().split("T")[0];
 
   if (!property) {
     return (
       <div className="booking-page">
-        <div className="booking-not-found">
+        <div className="booking-not-found" style={{ textAlign: "center", padding: "80px 20px" }}>
+          <div style={{ fontSize: 64 }}>🏚️</div>
           <h1>Property Not Found</h1>
-          <button onClick={() => navigate("/")}>Back To Home</button>
+          <p style={{ color: "#6b7280", margin: "8px 0 24px" }}>This property doesn't exist or was removed.</p>
+          <button onClick={() => navigate("/")} style={{ padding: "12px 28px", background: "#2f3a2f", color: "white", border: "none", borderRadius: 12, cursor: "pointer", fontSize: 15, fontWeight: 700 }}>
+            Back To Home
+          </button>
         </div>
       </div>
     );
@@ -43,27 +39,26 @@ function Booking() {
       : 1;
 
   const serviceFee = 499;
-  const total = property.price * nights + serviceFee;
+  const total = property.priceNum * nights + serviceFee;
 
   const validate = () => {
     const e = {};
     if (!name.trim()) e.name = "Please enter your name.";
     if (!email.trim()) e.email = "Please enter your email.";
+    else if (!/\S+@\S+\.\S+/.test(email)) e.email = "Enter a valid email address.";
     if (!checkIn) e.checkIn = "Select check-in date.";
     if (!checkOut) e.checkOut = "Select check-out date.";
+    else if (checkOut <= checkIn) e.checkOut = "Check-out must be after check-in.";
     return e;
   };
 
   const handleBooking = () => {
     const e = validate();
-    if (Object.keys(e).length > 0) {
-      setErrors(e);
-      return;
-    }
+    if (Object.keys(e).length > 0) { setErrors(e); return; }
 
     const bookingId = "HM" + Math.floor(100000 + Math.random() * 900000);
     navigate("/booking-success", {
-      state: { property: property.title, location: property.location, checkIn, checkOut, guests, total, bookingId, name, email },
+      state: { property: property.title, location: `${property.location}, India`, checkIn, checkOut, guests, total, bookingId, name, email },
     });
   };
 
@@ -82,7 +77,7 @@ function Booking() {
       </nav>
 
       <div className="booking-inner">
-        <h1>Confirm & Book</h1>
+        <h1>Confirm &amp; Book</h1>
 
         <div className="booking-layout">
           {/* Form */}
@@ -92,7 +87,7 @@ function Booking() {
               <img src={property.image} alt={property.title} />
               <div className="property-summary-info">
                 <h3>{property.title}</h3>
-                <p className="summary-location">📍 {property.location}</p>
+                <p className="summary-location">📍 {property.location}, India</p>
                 <div className="summary-rating">
                   <FaStar /> {property.rating} · {property.reviews} reviews
                 </div>
@@ -153,9 +148,9 @@ function Booking() {
             <div className="input-group">
               <label>Guests</label>
               <div className="guest-counter">
-                <button onClick={() => guests > 1 && setGuests(guests - 1)}>−</button>
+                <button type="button" onClick={() => guests > 1 && setGuests(guests - 1)}>−</button>
                 <span>{guests}</span>
-                <button onClick={() => setGuests(guests + 1)}>+</button>
+                <button type="button" onClick={() => setGuests(guests + 1)}>+</button>
               </div>
             </div>
 
@@ -171,8 +166,8 @@ function Booking() {
             <h2>Price Details</h2>
 
             <div className="price-detail-row">
-              <span>₹{property.price.toLocaleString()} × {nights} night{nights > 1 ? "s" : ""}</span>
-              <span>₹{(property.price * nights).toLocaleString()}</span>
+              <span>₹{property.priceNum.toLocaleString()} × {nights} night{nights > 1 ? "s" : ""}</span>
+              <span>₹{(property.priceNum * nights).toLocaleString()}</span>
             </div>
 
             <div className="price-detail-row">
