@@ -1,6 +1,6 @@
 import "./GuestFavorites.css";
 import { useNavigate } from "react-router-dom";
-import { FaStar, FaArrowRight } from "react-icons/fa";
+import { FaStar, FaArrowRight, FaMapMarkerAlt, FaTrophy, FaWater, FaMountain, FaShip, FaCity, FaTree, FaSun } from "react-icons/fa";
 
 function GuestFavorites() {
   const navigate = useNavigate();
@@ -13,7 +13,8 @@ function GuestFavorites() {
       rating: 4.9,
       reviews: 312,
       price: "₹8,499",
-      tag: "🏆 Traveler Choice",
+      tag: "Traveler Choice",
+      tagIcon: <FaTrophy />,
       image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
     },
     {
@@ -23,7 +24,8 @@ function GuestFavorites() {
       rating: 4.8,
       reviews: 245,
       price: "₹6,999",
-      tag: "🌊 Beachfront",
+      tag: "Beachfront",
+      tagIcon: <FaWater />,
       image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80",
     },
     {
@@ -33,7 +35,8 @@ function GuestFavorites() {
       rating: 4.7,
       reviews: 178,
       price: "₹5,499",
-      tag: "🏔️ Scenic View",
+      tag: "Scenic View",
+      tagIcon: <FaMountain />,
       image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80",
     },
     {
@@ -43,7 +46,8 @@ function GuestFavorites() {
       rating: 4.9,
       reviews: 420,
       price: "₹9,999",
-      tag: "🏆 Traveler Choice",
+      tag: "Traveler Choice",
+      tagIcon: <FaTrophy />,
       image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800&q=80",
     },
     {
@@ -53,7 +57,8 @@ function GuestFavorites() {
       rating: 4.8,
       reviews: 215,
       price: "₹7,299",
-      tag: "🛶 Lakeside",
+      tag: "Lakeside",
+      tagIcon: <FaShip />,
       image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&q=80",
     },
     {
@@ -63,7 +68,8 @@ function GuestFavorites() {
       rating: 4.7,
       reviews: 156,
       price: "₹4,899",
-      tag: "🏙️ City Center",
+      tag: "City Center",
+      tagIcon: <FaCity />,
       image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80",
     },
     {
@@ -73,7 +79,8 @@ function GuestFavorites() {
       rating: 4.9,
       reviews: 198,
       price: "₹5,999",
-      tag: "🌲 Nature Stay",
+      tag: "Nature Stay",
+      tagIcon: <FaTree />,
       image: "https://images.unsplash.com/photo-1539627831859-a911cf04d3cd?w=800&q=80",
     },
     {
@@ -83,7 +90,8 @@ function GuestFavorites() {
       rating: 4.8,
       reviews: 275,
       price: "₹8,999",
-      tag: "🌅 Premium",
+      tag: "Premium",
+      tagIcon: <FaSun />,
       image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
     },
   ];
@@ -110,7 +118,9 @@ function GuestFavorites() {
               <div className="fav-image-wrap">
                 <img src={hotel.image} alt={hotel.name} loading="lazy" />
                 <div className="fav-overlay" />
-                <div className="fav-tag">{hotel.tag}</div>
+                <div className="fav-tag">
+                    <span className="fav-tag-icon">{hotel.tagIcon}</span> {hotel.tag}
+                </div>
               </div>
 
               <div className="fav-info">
@@ -120,7 +130,7 @@ function GuestFavorites() {
                     <FaStar /> {hotel.rating}
                   </span>
                 </div>
-                <p className="fav-location">📍 {hotel.location}</p>
+                <p className="fav-location"><FaMapMarkerAlt /> {hotel.location}</p>
                 <div className="fav-bottom">
                   <span className="fav-reviews">{hotel.reviews} reviews</span>
                   <span className="fav-price">

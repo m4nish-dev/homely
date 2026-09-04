@@ -32,11 +32,11 @@ const amenitiesByCategory = {
 };
 
 const highlightsByCategory = {
-  Villas: [{ icon: "🛏️", label: "3 Bedrooms" }, { icon: "👥", label: "6 Guests" }, { icon: "🛁", label: "2 Bathrooms" }, { icon: "🏊", label: "Private Pool" }],
-  Flats: [{ icon: "🛏️", label: "1 Bedroom" }, { icon: "👥", label: "2 Guests" }, { icon: "🛁", label: "1 Bathroom" }, { icon: "🏙️", label: "City View" }],
-  Resorts: [{ icon: "🛏️", label: "Suite Room" }, { icon: "👥", label: "4 Guests" }, { icon: "🛁", label: "2 Bathrooms" }, { icon: "🌊", label: "Ocean View" }],
-  Cabins: [{ icon: "🛏️", label: "2 Bedrooms" }, { icon: "👥", label: "4 Guests" }, { icon: "🛁", label: "1 Bathroom" }, { icon: "🏔️", label: "Mountain View" }],
-  Hotels: [{ icon: "🛏️", label: "Premium Room" }, { icon: "👥", label: "2 Guests" }, { icon: "🛁", label: "1 Bathroom" }, { icon: "🛎️", label: "24/7 Service" }],
+  Villas: [{ icon: "bed", label: "3 Bedrooms" }, { icon: "users", label: "6 Guests" }, { icon: "bath", label: "2 Bathrooms" }, { icon: "pool", label: "Private Pool" }],
+  Flats: [{ icon: "bed", label: "1 Bedroom" }, { icon: "users", label: "2 Guests" }, { icon: "bath", label: "1 Bathroom" }, { icon: "city", label: "City View" }],
+  Resorts: [{ icon: "bed", label: "Suite Room" }, { icon: "users", label: "4 Guests" }, { icon: "bath", label: "2 Bathrooms" }, { icon: "ocean", label: "Ocean View" }],
+  Cabins: [{ icon: "bed", label: "2 Bedrooms" }, { icon: "users", label: "4 Guests" }, { icon: "bath", label: "1 Bathroom" }, { icon: "mountain", label: "Mountain View" }],
+  Hotels: [{ icon: "bed", label: "Premium Room" }, { icon: "users", label: "2 Guests" }, { icon: "bath", label: "1 Bathroom" }, { icon: "service", label: "24/7 Service" }],
 };
 
 const imageBank = [

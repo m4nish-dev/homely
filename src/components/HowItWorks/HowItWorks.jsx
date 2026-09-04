@@ -1,27 +1,28 @@
 import "./HowItWorks.css";
+import { FaSearch, FaHome, FaClipboardCheck, FaPlaneDeparture } from "react-icons/fa";
 
 const steps = [
   {
     number: "01",
-    icon: "🔍",
+    icon: <FaSearch color="#d89b4a" size={36} />,
     title: "Search Your Destination",
     desc: "Tell us where you want to go, your dates, and how many guests. Discover thousands of curated properties instantly.",
   },
   {
     number: "02",
-    icon: "🏠",
+    icon: <FaHome color="#d89b4a" size={36} />,
     title: "Choose Your Stay",
     desc: "Browse stunning photos, read verified reviews, and compare prices. Filter by type, amenities, and budget.",
   },
   {
     number: "03",
-    icon: "📋",
+    icon: <FaClipboardCheck color="#d89b4a" size={36} />,
     title: "Book with Confidence",
     desc: "Secure instant booking with our encrypted payment system. Get your confirmation in seconds.",
   },
   {
     number: "04",
-    icon: "✈️",
+    icon: <FaPlaneDeparture color="#d89b4a" size={36} />,
     title: "Enjoy Your Stay",
     desc: "Arrive, relax, and enjoy. Our 24/7 support team is always ready if you need anything during your trip.",
   },

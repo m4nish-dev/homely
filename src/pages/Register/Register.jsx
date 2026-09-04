@@ -45,7 +45,7 @@ function Register({ onClose, onLoginClick }) {
         {success ? (
           <div className="modal-success">
             <FaCheckCircle className="modal-success-icon" />
-            <h2>Account Created! 🎉</h2>
+            <h2>Account Created!</h2>
             <p>Welcome to Homely. You're all set!</p>
           </div>
         ) : (

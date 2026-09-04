@@ -1,5 +1,5 @@
 import "./PropertyListings.css";
-import { FaHeart, FaChevronLeft, FaChevronRight, FaStar, FaArrowRight } from "react-icons/fa";
+import { FaHeart, FaChevronLeft, FaChevronRight, FaStar, FaArrowRight, FaHome } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ALL_PROPERTIES from "../../data/properties";
@@ -60,7 +60,7 @@ function PropertyListings() {
     <section className="listings">
       <div className="listings-header">
         <div>
-          <span className="listings-eyebrow">🏡 Handpicked For You</span>
+          <span className="listings-eyebrow"><FaHome /> Handpicked For You</span>
           <h2>Popular Stays</h2>
           <p>Discover handpicked stays loved by travelers around the world.</p>
         </div>
@@ -97,7 +97,7 @@ function PropertyListings() {
 
               <div className="card-badges">
                 {property.isNew && <div className="new-badge">New</div>}
-                <div className="guest-badge">⭐ Guest Fave</div>
+                <div className="guest-badge"><FaStar color="#d89b4a" style={{ marginRight: "4px" }} /> Guest Fave</div>
               </div>
 
               <button

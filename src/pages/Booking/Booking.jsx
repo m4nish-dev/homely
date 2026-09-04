@@ -1,7 +1,7 @@
 import "./Booking.css";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FaArrowLeft, FaStar, FaShieldAlt } from "react-icons/fa";
+import { FaArrowLeft, FaStar, FaShieldAlt, FaHome, FaMapMarkerAlt, FaCheck, FaLock } from "react-icons/fa";
 import ALL_PROPERTIES from "../../data/properties";
 
 function Booking() {
@@ -22,7 +22,7 @@ function Booking() {
     return (
       <div className="booking-page">
         <div className="booking-not-found" style={{ textAlign: "center", padding: "80px 20px" }}>
-          <div style={{ fontSize: 64 }}>🏚️</div>
+          <div style={{ fontSize: 64, color: "#d89b4a", marginBottom: 16 }}><FaHome /></div>
           <h1>Property Not Found</h1>
           <p style={{ color: "#6b7280", margin: "8px 0 24px" }}>This property doesn't exist or was removed.</p>
           <button onClick={() => navigate("/")} style={{ padding: "12px 28px", background: "#2f3a2f", color: "white", border: "none", borderRadius: 12, cursor: "pointer", fontSize: 15, fontWeight: 700 }}>
@@ -87,11 +87,11 @@ function Booking() {
               <img src={property.image} alt={property.title} />
               <div className="property-summary-info">
                 <h3>{property.title}</h3>
-                <p className="summary-location">📍 {property.location}, India</p>
+                <p className="summary-location"><FaMapMarkerAlt /> {property.location}, India</p>
                 <div className="summary-rating">
                   <FaStar /> {property.rating} · {property.reviews} reviews
                 </div>
-                <span className="booking-tag">⭐ Guest Favorite</span>
+                <span className="booking-tag"><FaStar color="#d89b4a" /> Guest Favorite</span>
               </div>
             </div>
 
@@ -155,9 +155,9 @@ function Booking() {
             </div>
 
             <div className="booking-policies">
-              <div className="policy-item">✓ Free cancellation before check-in</div>
-              <div className="policy-item">✓ Instant booking confirmation</div>
-              <div className="policy-item">✓ Secure and encrypted payment</div>
+              <div className="policy-item"><FaCheck color="#22c55e" /> Free cancellation before check-in</div>
+              <div className="policy-item"><FaCheck color="#22c55e" /> Instant booking confirmation</div>
+              <div className="policy-item"><FaCheck color="#22c55e" /> Secure and encrypted payment</div>
             </div>
           </div>
 
@@ -187,8 +187,8 @@ function Booking() {
             <p className="booking-note">You'll be charged ₹{total.toLocaleString()} after confirming.</p>
 
             <div className="trust-badges">
-              <div className="trust-badge">🔒 Secure Payment</div>
-              <div className="trust-badge">✓ Verified Property</div>
+              <div className="trust-badge"><FaLock color="#6b7280" /> Secure Payment</div>
+              <div className="trust-badge"><FaCheck color="#22c55e" /> Verified Property</div>
             </div>
           </div>
         </div>

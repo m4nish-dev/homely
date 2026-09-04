@@ -37,7 +37,7 @@ function BookingSuccess() {
         </div>
 
         <h1>Booking Confirmed!</h1>
-        <p>Your stay has been successfully booked. Have a wonderful trip! 🎉</p>
+        <p>Your stay has been successfully booked. Have a wonderful trip!</p>
 
         {/* Booking ID */}
         <div className="booking-id">

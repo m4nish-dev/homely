@@ -1,5 +1,5 @@
 import "./PropertyDetails.css";
-import { FaArrowLeft, FaWifi, FaSwimmingPool, FaParking, FaStar, FaHeart, FaShare, FaCheckCircle } from "react-icons/fa";
+import { FaArrowLeft, FaWifi, FaSwimmingPool, FaParking, FaStar, FaHeart, FaShare, FaCheckCircle, FaSnowflake, FaFire, FaTv, FaUtensils, FaTshirt, FaCity, FaSpa, FaConciergeBell, FaDumbbell, FaMountain, FaHiking, FaShower, FaWater, FaCheck, FaHome, FaMapMarkerAlt, FaBed, FaUsers, FaBath } from "react-icons/fa";
 import { MdOutlineBedroomParent, MdOutlineFreeBreakfast } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -10,23 +10,34 @@ const amenityIcons = {
   "Free WiFi": <FaWifi />,
   "Free Parking": <FaParking />,
   "Breakfast Included": <MdOutlineFreeBreakfast />,
-  "Air Conditioning": "❄️",
-  "BBQ Grill": "🔥",
-  "Smart TV": "📺",
-  "Fully Equipped Kitchen": "🍳",
-  "Washing Machine": "🫧",
-  "City View": "🏙️",
-  "Spa & Wellness": "💆",
-  "Restaurant On-Site": "🍽️",
+  "Air Conditioning": <FaSnowflake />,
+  "BBQ Grill": <FaFire />,
+  "Smart TV": <FaTv />,
+  "Fully Equipped Kitchen": <FaUtensils />,
+  "Washing Machine": <FaTshirt />,
+  "City View": <FaCity />,
+  "Spa & Wellness": <FaSpa />,
+  "Restaurant On-Site": <FaUtensils />,
   "Swimming Pool": <FaSwimmingPool />,
-  "Room Service": "🛎️",
-  "Gym": "🏋️",
-  "Mountain View": "🏔️",
-  "Bonfire Area": "🔥",
-  "Hiking Trails": "🥾",
-  "Hot Shower": "🚿",
+  "Room Service": <FaConciergeBell />,
+  "Gym": <FaDumbbell />,
+  "Mountain View": <FaMountain />,
+  "Bonfire Area": <FaFire />,
+  "Hiking Trails": <FaHiking />,
+  "Hot Shower": <FaShower />,
   "Luxury Rooms": <MdOutlineBedroomParent />,
-  "Ocean View": "🌊",
+  "Ocean View": <FaWater />,
+};
+
+const highlightIconMap = {
+  bed: <FaBed />,
+  users: <FaUsers />,
+  bath: <FaBath />,
+  pool: <FaSwimmingPool />,
+  city: <FaCity />,
+  ocean: <FaWater />,
+  mountain: <FaMountain />,
+  service: <FaConciergeBell />,
 };
 
 const reviewsByProperty = [
@@ -49,7 +60,7 @@ function PropertyDetails() {
     return (
       <div className="property-not-found">
         <div style={{ textAlign: "center", padding: "80px 20px" }}>
-          <div style={{ fontSize: 64 }}>🏚️</div>
+          <div style={{ fontSize: 64, color: "#d89b4a", marginBottom: 16 }}><FaHome /></div>
           <h1 style={{ marginTop: 16 }}>Property Not Found</h1>
           <p style={{ color: "#6b7280", marginTop: 8 }}>This property may have been removed or doesn't exist.</p>
           <button onClick={() => navigate("/")} style={{ marginTop: 24, padding: "12px 28px", background: "#2f3a2f", color: "white", border: "none", borderRadius: 12, cursor: "pointer", fontSize: 15, fontWeight: 700 }}>
@@ -118,9 +129,9 @@ function PropertyDetails() {
             <span className="meta-dot">·</span>
             <span className="meta-reviews">{property.reviews} reviews</span>
             <span className="meta-dot">·</span>
-            <span className="meta-location">📍 {property.location}, India</span>
+            <span className="meta-location"><FaMapMarkerAlt /> {property.location}, India</span>
             <span className="meta-dot">·</span>
-            <span className="meta-fav">⭐ Guest Favorite</span>
+            <span className="meta-fav"><FaStar color="#d89b4a" /> Guest Favorite</span>
           </div>
         </div>
 
@@ -153,7 +164,7 @@ function PropertyDetails() {
             {/* Highlights */}
             <div className="highlights">
               {property.highlights.map((h, i) => (
-                <div className="highlight-card" key={i}>{h.icon}<span>{h.label}</span></div>
+                <div className="highlight-card" key={i}>{highlightIconMap[h.icon]}<span>{h.label}</span></div>
               ))}
             </div>
 
@@ -206,9 +217,9 @@ function PropertyDetails() {
             </div>
 
             <div className="booking-features">
-              <div className="booking-feature">✓ Free Cancellation</div>
-              <div className="booking-feature">✓ Instant Confirmation</div>
-              <div className="booking-feature">✓ Secure Payments</div>
+              <div className="booking-feature"><FaCheck color="#22c55e" /> Free Cancellation</div>
+              <div className="booking-feature"><FaCheck color="#22c55e" /> Instant Confirmation</div>
+              <div className="booking-feature"><FaCheck color="#22c55e" /> Secure Payments</div>
             </div>
 
             <div className="booking-price-breakdown">

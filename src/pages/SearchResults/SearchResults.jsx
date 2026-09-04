@@ -1,8 +1,7 @@
 import "./SearchResults.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { FaStar, FaArrowLeft, FaFilter } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa";
+import { FaStar, FaArrowLeft, FaFilter, FaSearch, FaHeart } from "react-icons/fa";
 import ALL_PROPERTIES from "../../data/properties";
 
 function SearchResults() {
@@ -137,7 +136,7 @@ function SearchResults() {
           </div>
         ) : (
           <div className="no-results">
-            <div className="no-results-emoji">🔍</div>
+            <div className="no-results-emoji"><FaSearch style={{ color: "#d89b4a" }} /></div>
             <h2>No properties found</h2>
             <p>Try adjusting your search or explore a different destination.</p>
             <button onClick={() => { setActiveFilter("All"); navigate("/search"); }}>Explore All Stays</button>

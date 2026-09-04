@@ -1,5 +1,5 @@
 import "./SearchBar.css";
-import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { FaSearch, FaMapMarkerAlt, FaTree, FaBuilding, FaCity, FaLeaf, FaChessRook, FaWater } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,13 +17,13 @@ function SearchBar({ isScrolled }) {
   const locationRef = useRef(null);
   const guestRef = useRef(null);
 
-  const locations = [
-    { name: "Goa", emoji: "🌴" },
-    { name: "Delhi", emoji: "🏛️" },
-    { name: "Mumbai", emoji: "🌆" },
-    { name: "Bangalore", emoji: "🌿" },
-    { name: "Jaipur", emoji: "🏰" },
-    { name: "Kerala", emoji: "🌊" },
+  const popularCities = [
+    { name: "Goa", icon: <FaTree color="#22c55e" /> },
+    { name: "Delhi", icon: <FaBuilding color="#6b7280" /> },
+    { name: "Mumbai", icon: <FaCity color="#3b82f6" /> },
+    { name: "Bangalore", icon: <FaLeaf color="#22c55e" /> },
+    { name: "Jaipur", icon: <FaChessRook color="#d89b4a" /> },
+    { name: "Kerala", icon: <FaWater color="#3b82f6" /> },
   ];
 
   const totalGuests = adults + children;
@@ -73,17 +73,17 @@ function SearchBar({ isScrolled }) {
           {showLocationPopup && (
             <div className="location-popup">
               <p className="popup-label">Popular Destinations</p>
-              {locations.map((place) => (
+              {popularCities.map((city) => (
                 <div
-                  key={place.name}
+                  key={city.name}
                   className="location-option"
                   onClick={() => {
-                    setLocation(place.name);
+                    setLocation(city.name);
                     setShowLocationPopup(false);
                   }}
                 >
-                  <span className="loc-emoji">{place.emoji}</span>
-                  <span>{place.name}</span>
+                  <span className="city-icon">{city.icon}</span>
+                  <span>{city.name}</span>
                 </div>
               ))}
             </div>
