@@ -23,7 +23,7 @@ function SearchResults() {
     }
   }, [searchedCategory]);
 
-  const filters = ["All", "Villas", "Flats", "Resorts", "Cabins"];
+  const filters = ["All", "Hotels", "Villas", "Flats", "Resorts", "Cabins"];
 
   let filteredProperties = searchedLocation
     ? ALL_PROPERTIES.filter((p) => p.location.toLowerCase().includes(searchedLocation.toLowerCase()))

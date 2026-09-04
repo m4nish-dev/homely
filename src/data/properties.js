@@ -19,6 +19,8 @@ const descriptions = {
     "Wake up to breathtaking views at this premium resort. Enjoy curated amenities, spa services, and locally-inspired cuisine — every detail is designed to relax and refresh.",
   Cabins:
     "Escape into nature at this enchanting cabin hideaway. Surrounded by trees and mountain air, it's the perfect antidote to city life — cosy, quiet, and unforgettable.",
+  Hotels:
+    "Experience world-class hospitality in our premium hotels. Enjoy luxurious rooms, daily housekeeping, 24/7 room service, and stunning city views right from your window.",
 };
 
 const amenitiesByCategory = {
@@ -26,6 +28,7 @@ const amenitiesByCategory = {
   Flats: ["Free WiFi", "Smart TV", "Fully Equipped Kitchen", "Washing Machine", "Air Conditioning", "City View"],
   Resorts: ["Spa & Wellness", "Restaurant On-Site", "Swimming Pool", "Free WiFi", "Room Service", "Gym"],
   Cabins: ["Mountain View", "Bonfire Area", "Free Parking", "Free WiFi", "Hiking Trails", "Hot Shower"],
+  Hotels: ["Free WiFi", "Room Service", "Daily Housekeeping", "Restaurant On-Site", "Gym", "Air Conditioning"],
 };
 
 const highlightsByCategory = {
@@ -33,6 +36,7 @@ const highlightsByCategory = {
   Flats: [{ icon: "🛏️", label: "1 Bedroom" }, { icon: "👥", label: "2 Guests" }, { icon: "🛁", label: "1 Bathroom" }, { icon: "🏙️", label: "City View" }],
   Resorts: [{ icon: "🛏️", label: "Suite Room" }, { icon: "👥", label: "4 Guests" }, { icon: "🛁", label: "2 Bathrooms" }, { icon: "🌊", label: "Ocean View" }],
   Cabins: [{ icon: "🛏️", label: "2 Bedrooms" }, { icon: "👥", label: "4 Guests" }, { icon: "🛁", label: "1 Bathroom" }, { icon: "🏔️", label: "Mountain View" }],
+  Hotels: [{ icon: "🛏️", label: "Premium Room" }, { icon: "👥", label: "2 Guests" }, { icon: "🛁", label: "1 Bathroom" }, { icon: "🛎️", label: "24/7 Service" }],
 };
 
 const imageBank = [
@@ -96,7 +100,7 @@ const imageBank = [
 
 const titles = ["Luxury Stay", "Modern Retreat", "Cozy Getaway", "Heritage Escape", "Panoramic View", "Nature Nest", "Grand Escape", "Serene Hideaway"];
 const locations = ["Mumbai", "Delhi", "Goa", "Bangalore", "Hyderabad", "Jaipur", "Kerala", "Manali"];
-const categories = ["Villas", "Flats", "Resorts", "Cabins"];
+const categories = ["Hotels", "Villas", "Flats", "Resorts", "Cabins"];
 const prices = [3999, 4499, 4999, 5499, 5999, 6499, 6999, 7499, 7999, 8499, 8999, 3499];
 
 export const ALL_PROPERTIES = [];

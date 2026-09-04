@@ -11,7 +11,7 @@ function PropertyListings() {
   const [currentImages, setCurrentImages] = useState({});
 
   const properties = ALL_PROPERTIES;
-  const filters = ["All", "Villas", "Flats", "Resorts", "Cabins"];
+  const filters = ["All", "Hotels", "Villas", "Flats", "Resorts", "Cabins"];
 
   const filteredProperties =
     activeFilter === "All"
