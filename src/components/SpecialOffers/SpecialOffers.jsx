@@ -57,7 +57,7 @@ function SpecialOffers() {
             <div
               className="offer-card"
               key={offer.id}
-              onClick={() => navigate("/search")}
+              onClick={() => navigate(`/property/${offer.id}`)}
             >
               {/* Background image */}
               <div

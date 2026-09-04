@@ -16,7 +16,7 @@ function PopularDestinations() {
   ];
 
   return (
-    <section className="destinations">
+    <section className="destinations" id="destinations">
       <div className="section-header">
         <h2>Popular Destinations</h2>
         <p>Explore trending cities loved by travelers across India.</p>

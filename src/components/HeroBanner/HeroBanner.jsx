@@ -77,7 +77,17 @@ function HeroBanner({ isScrolled }) {
             <button className="hero-btn primary" onClick={() => navigate("/search")}>
               Explore Stays
             </button>
-            <button className="hero-btn secondary" onClick={() => navigate("/search")}>
+            <button 
+              className="hero-btn secondary" 
+              onClick={() => {
+                const el = document.getElementById("destinations");
+                if (el) {
+                  const offset = 80;
+                  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                  window.scrollTo({ top, behavior: "smooth" });
+                }
+              }}
+            >
               View All Destinations
             </button>
           </div>
