@@ -29,10 +29,87 @@ const authLimiter = rateLimit({
 });
 
 // Local Auth Routes
+
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, email, password]
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ */
 router.post('/register', authLimiter, registerValidator, validate, register);
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Authenticate user & get token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       401:
+ *         description: Invalid credentials
+ */
 router.post('/login', authLimiter, loginValidator, validate, login);
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Clear cookies and logout
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Logged out
+ */
 router.post('/logout', protect, logout);
+
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get current authenticated user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User data
+ *       401:
+ *         description: Not authorized
+ */
 router.get('/me', protect, getMe);
+
 router.post('/forgot-password', forgotPasswordValidator, validate, forgotPassword);
 router.put('/reset-password/:token', resetPasswordValidator, validate, resetPassword);
 router.put('/update-password', protect, updatePassword);

@@ -25,6 +25,10 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 
+// Swagger OpenAPI
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
+
 const app = express();
 
 app.set('trust proxy', 1);
@@ -83,6 +87,9 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Mount Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 404 and error handler LAST
 app.use(notFound);
