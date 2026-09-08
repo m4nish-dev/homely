@@ -2,7 +2,7 @@ import "./SearchResults.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { FaStar, FaArrowLeft, FaFilter, FaSearch, FaHeart } from "react-icons/fa";
-import ALL_PROPERTIES from "../../data/properties";
+import propertyService from "../../api/propertyService";
 
 function SearchResults() {
   const navigate = useNavigate();
@@ -14,6 +14,9 @@ function SearchResults() {
   const [activeFilter, setActiveFilter] = useState(searchedCategory);
   const [sortBy, setSortBy] = useState("Recommended");
   const [favorites, setFavorites] = useState([]);
+  
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Sync filter if URL category param changes
   useEffect(() => {
@@ -22,20 +25,27 @@ function SearchResults() {
     }
   }, [searchedCategory]);
 
+  useEffect(() => {
+    const fetchProperties = async () => {
+      setLoading(true);
+      try {
+        const data = await propertyService.getAll({
+          location: searchedLocation,
+          category: activeFilter === "All" ? "" : activeFilter,
+          sortBy
+        });
+        setProperties(data.properties || []);
+      } catch (err) {
+        console.error("Failed to fetch properties", err);
+        setProperties([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperties();
+  }, [searchedLocation, activeFilter, sortBy]);
+
   const filters = ["All", "Hotels", "Villas", "Flats", "Resorts", "Cabins"];
-
-  let filteredProperties = searchedLocation
-    ? ALL_PROPERTIES.filter((p) => p.location.toLowerCase().includes(searchedLocation.toLowerCase()))
-    : ALL_PROPERTIES;
-
-  if (activeFilter !== "All") {
-    filteredProperties = filteredProperties.filter((p) => p.category === activeFilter);
-  }
-
-  const sorted = [...filteredProperties];
-  if (sortBy === "Low") sorted.sort((a, b) => a.priceNum - b.priceNum);
-  if (sortBy === "High") sorted.sort((a, b) => b.priceNum - a.priceNum);
-  if (sortBy === "Rating") sorted.sort((a, b) => b.rating - a.rating);
 
   const toggleFavorite = (id, e) => {
     e.stopPropagation();
@@ -68,7 +78,7 @@ function SearchResults() {
                 "All Stays"
               )}
             </h1>
-            <p>{sorted.length} properties found</p>
+            <p>{properties.length} properties found</p>
           </div>
 
           <div className="search-controls">
@@ -76,9 +86,9 @@ function SearchResults() {
               <FaFilter />
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                 <option value="Recommended">Recommended</option>
-                <option value="Low">Price: Low → High</option>
-                <option value="High">Price: High → Low</option>
-                <option value="Rating">Top Rated</option>
+                <option value="priceAsc">Price: Low → High</option>
+                <option value="priceDesc">Price: High → Low</option>
+                <option value="rating">Top Rated</option>
               </select>
             </div>
           </div>
@@ -97,37 +107,41 @@ function SearchResults() {
           ))}
         </div>
 
-        {/* Results Grid */}
-        {sorted.length > 0 ? (
+        {/* Dynamic Data Grid */}
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "100px 20px" }}>
+             <h2>Loading properties...</h2>
+          </div>
+        ) : properties.length > 0 ? (
           <div className="results-grid">
-            {sorted.map((property) => (
+            {properties.map((property) => (
               <div
                 className="result-card"
-                key={property.id}
-                onClick={() => navigate(`/property/${property.id}`)}
+                key={property._id}
+                onClick={() => navigate(`/property/${property._id}`)}
               >
                 <div className="result-img-wrap">
-                  <img src={property.image} alt={property.title} loading="lazy" />
+                  <img src={property.images && property.images.length > 0 ? property.images[0].url : ""} alt={property.title} loading="lazy" />
                   <button
                     className="result-fav-btn"
-                    onClick={(e) => toggleFavorite(property.id, e)}
+                    onClick={(e) => toggleFavorite(property._id, e)}
                   >
-                    <FaHeart color={favorites.includes(property.id) ? "#ff385c" : "rgba(255,255,255,0.85)"} />
+                    <FaHeart color={favorites.includes(property._id) ? "#ff385c" : "rgba(255,255,255,0.85)"} />
                   </button>
                   <div className="result-category-badge">{property.category}</div>
                 </div>
 
                 <div className="result-info">
                   <div className="result-top">
-                    <h3 className="result-location">{property.location}</h3>
+                    <h3 className="result-location">{property.location?.city || property.location}</h3>
                     <span className="result-rating">
-                      <FaStar /> {property.rating}
+                      <FaStar /> {property.rating || "New"}
                     </span>
                   </div>
                   <p className="result-subtitle">{property.title}</p>
-                  <p className="result-subtitle">{property.reviews} reviews</p>
+                  <p className="result-subtitle">{property.reviewCount || 0} reviews</p>
                   <h4 className="result-price">
-                    {property.price}
+                    ₹{property.price?.toLocaleString()}
                     <span> night</span>
                   </h4>
                 </div>

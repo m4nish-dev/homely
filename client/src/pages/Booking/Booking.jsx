@@ -1,22 +1,65 @@
 import "./Booking.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaStar, FaShieldAlt, FaHome, FaMapMarkerAlt, FaCheck, FaLock } from "react-icons/fa";
-import ALL_PROPERTIES from "../../data/properties";
+import propertyService from "../../api/propertyService";
+import bookingService from "../../api/bookingService";
+import paymentService from "../../api/paymentService";
+import { useAuth } from "../../context/AuthContext";
+
+// Dynamic script loader utility for the Razorpay SDK
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 function Booking() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [guests, setGuests] = useState(1);
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
   const [errors, setErrors] = useState({});
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const property = ALL_PROPERTIES.find((p) => p.id === parseInt(id));
   const today = new Date().toISOString().split("T")[0];
+
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        const data = await propertyService.getById(id);
+        setProperty(data.property);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperty();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="booking-page">
+        <div style={{ textAlign: "center", padding: "100px 20px" }}>
+          <h2>Preparing booking gateway...</h2>
+        </div>
+      </div>
+    );
+  }
 
   if (!property) {
     return (
@@ -39,7 +82,7 @@ function Booking() {
       : 1;
 
   const serviceFee = 499;
-  const total = property.priceNum * nights + serviceFee;
+  const total = property.price * nights + serviceFee;
 
   const validate = () => {
     const e = {};
@@ -52,28 +95,102 @@ function Booking() {
     return e;
   };
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
+    
+    if (!user) {
+      alert("Please login or create an account to finalize your booking.");
+      return;
+    }
 
-    const bookingId = "HM" + Math.floor(100000 + Math.random() * 900000);
-    navigate("/booking-success", {
-      state: { property: property.title, location: `${property.location}, India`, checkIn, checkOut, guests, total, bookingId, name, email },
-    });
+    setIsProcessing(true);
+
+    try {
+      // 1. Inject the Razorpay Script into the DOM
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        throw new Error("Razorpay payment gateway failed to load. Please check your connection.");
+      }
+
+      // 2. Initialize the Booking in MongoDB via a Session Transaction
+      const bookingData = await bookingService.create({
+        property: property._id,
+        checkIn,
+        checkOut,
+        guests: { adults: guests, children: 0, infants: 0 },
+        guestDetails: { name, email },
+        specialRequests: ""
+      });
+
+      const backendBookingId = bookingData.booking._id;
+
+      // 3. Request a secure Order Token from Razorpay via the Backend
+      const orderData = await paymentService.createOrder(backendBookingId);
+
+      // 4. Mount the Razorpay Checkout Modal UI
+      const options = {
+        key: orderData.key,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Homely",
+        description: `Booking for ${property.title}`,
+        order_id: orderData.orderId,
+        handler: async function (response) {
+          try {
+            // 5. Pass the Razorpay signature back to the server for cryptographic validation
+            await paymentService.verify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            // 6. Signature cleared! Route user to success screen
+            navigate("/booking-success", {
+              state: { 
+                property: property.title, 
+                location: `${property.location?.city || property.location?.address}, India`, 
+                checkIn, 
+                checkOut, 
+                guests, 
+                total, 
+                bookingId: backendBookingId, 
+                name, 
+                email 
+              },
+            });
+          } catch (verifyError) {
+            console.error("Payment Verification Failed", verifyError);
+            alert("Payment was processed, but the cryptographic signature failed to verify. Please contact support.");
+          }
+        },
+        prefill: { name, email },
+        theme: { color: "#2f3a2f" },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", function (response) {
+        alert("Payment Gateway Error: " + response.error.description);
+      });
+      
+      rzp.open();
+
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || err.message || "Failed to initialize the booking.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
     <div className="booking-page">
-      {/* Mini Nav */}
       <nav className="booking-nav">
         <button className="booking-back-btn" onClick={() => navigate(`/property/${id}`)}>
-          <FaArrowLeft />
-          Back
+          <FaArrowLeft /> Back
         </button>
         <span className="booking-logo" onClick={() => navigate("/")}>Homely</span>
-        <div className="booking-secure">
-          <FaShieldAlt /> Secure Checkout
-        </div>
+        <div className="booking-secure"><FaShieldAlt /> Secure Checkout</div>
       </nav>
 
       <div className="booking-inner">
@@ -82,16 +199,15 @@ function Booking() {
         <div className="booking-layout">
           {/* Form */}
           <div className="booking-form">
-            {/* Property Summary */}
             <div className="property-summary">
-              <img src={property.image} alt={property.title} />
+              <img src={property.images && property.images.length > 0 ? property.images[0].url : ""} alt={property.title} />
               <div className="property-summary-info">
                 <h3>{property.title}</h3>
-                <p className="summary-location"><FaMapMarkerAlt /> {property.location}, India</p>
+                <p className="summary-location"><FaMapMarkerAlt /> {property.location?.city || property.location?.address}, India</p>
                 <div className="summary-rating">
-                  <FaStar /> {property.rating} · {property.reviews} reviews
+                  <FaStar /> {property.rating || "New"} · {property.reviewCount || 0} reviews
                 </div>
-                <span className="booking-tag"><FaStar color="#d89b4a" /> Guest Favorite</span>
+                {property.isFeatured && <span className="booking-tag"><FaStar color="#d89b4a" /> Guest Favorite</span>}
               </div>
             </div>
 
@@ -150,7 +266,7 @@ function Booking() {
               <div className="guest-counter">
                 <button type="button" onClick={() => guests > 1 && setGuests(guests - 1)}>−</button>
                 <span>{guests}</span>
-                <button type="button" onClick={() => setGuests(guests + 1)}>+</button>
+                <button type="button" onClick={() => guests < (property.maxGuests || 10) && setGuests(guests + 1)}>+</button>
               </div>
             </div>
 
@@ -166,8 +282,8 @@ function Booking() {
             <h2>Price Details</h2>
 
             <div className="price-detail-row">
-              <span>₹{property.priceNum.toLocaleString()} × {nights} night{nights > 1 ? "s" : ""}</span>
-              <span>₹{(property.priceNum * nights).toLocaleString()}</span>
+              <span>₹{property.price?.toLocaleString()} × {nights} night{nights > 1 ? "s" : ""}</span>
+              <span>₹{(property.price * nights).toLocaleString()}</span>
             </div>
 
             <div className="price-detail-row">
@@ -180,11 +296,11 @@ function Booking() {
               <span>₹{total.toLocaleString()}</span>
             </div>
 
-            <button className="book-btn" onClick={handleBooking}>
-              Book Now
+            <button className="book-btn" onClick={handleBooking} disabled={isProcessing}>
+              {isProcessing ? "Processing Secure Payment..." : "Pay with Razorpay"}
             </button>
 
-            <p className="booking-note">You'll be charged ₹{total.toLocaleString()} after confirming.</p>
+            <p className="booking-note">You'll be charged ₹{total.toLocaleString()} securely via Razorpay.</p>
 
             <div className="trust-badges">
               <div className="trust-badge"><FaLock color="#6b7280" /> Secure Payment</div>

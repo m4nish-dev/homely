@@ -2,8 +2,8 @@ import "./PropertyDetails.css";
 import { FaArrowLeft, FaWifi, FaSwimmingPool, FaParking, FaStar, FaHeart, FaShare, FaCheckCircle, FaSnowflake, FaFire, FaTv, FaUtensils, FaTshirt, FaCity, FaSpa, FaConciergeBell, FaDumbbell, FaMountain, FaHiking, FaShower, FaWater, FaCheck, FaHome, FaMapMarkerAlt, FaBed, FaUsers, FaBath } from "react-icons/fa";
 import { MdOutlineBedroomParent, MdOutlineFreeBreakfast } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import ALL_PROPERTIES from "../../data/properties";
+import { useState, useEffect } from "react";
+import propertyService from "../../api/propertyService";
 
 const amenityIcons = {
   "Private Pool": <FaSwimmingPool />,
@@ -40,11 +40,10 @@ const highlightIconMap = {
   service: <FaConciergeBell />,
 };
 
-const reviewsByProperty = [
+// Fallback dummy reviews while review system UI isn't fully integrated yet
+const dummyReviews = [
   { avatar: "R", name: "Rahul Sharma", date: "August 2026", text: "Amazing stay. Clean rooms, beautiful view and excellent hospitality. Will definitely come back!" },
   { avatar: "P", name: "Priya Menon", date: "July 2026", text: "One of the best vacation properties I have ever stayed in. Absolutely stunning!" },
-  { avatar: "A", name: "Aryan Kapoor", date: "June 2026", text: "The host was incredibly responsive and the property exceeded all expectations." },
-  { avatar: "S", name: "Sneha Iyer", date: "May 2026", text: "Perfect getaway! The view is unmatched. We're already planning our next visit." },
 ];
 
 function PropertyDetails() {
@@ -53,8 +52,34 @@ function PropertyDetails() {
   const [isFav, setIsFav] = useState(false);
   const [shareMsg, setShareMsg] = useState("");
   const [selectedImg, setSelectedImg] = useState(null);
+  
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const property = ALL_PROPERTIES.find((p) => p.id === parseInt(id));
+  // Asynchronous query on mount
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        const data = await propertyService.getById(id);
+        setProperty(data.property);
+      } catch (err) {
+        console.error("Property not found", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperty();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="property-page">
+        <div style={{ textAlign: "center", padding: "100px 20px" }}>
+          <h2>Loading property details...</h2>
+        </div>
+      </div>
+    );
+  }
 
   if (!property) {
     return (
@@ -125,28 +150,36 @@ function PropertyDetails() {
         <div className="property-header">
           <h1>{property.title}</h1>
           <div className="property-meta">
-            <span className="meta-rating"><FaStar /> {property.rating}</span>
+            <span className="meta-rating"><FaStar /> {property.rating || "New"}</span>
             <span className="meta-dot">·</span>
-            <span className="meta-reviews">{property.reviews} reviews</span>
+            <span className="meta-reviews">{property.reviewCount || 0} reviews</span>
             <span className="meta-dot">·</span>
-            <span className="meta-location"><FaMapMarkerAlt /> {property.location}, India</span>
-            <span className="meta-dot">·</span>
-            <span className="meta-fav"><FaStar color="#d89b4a" /> Guest Favorite</span>
+            <span className="meta-location"><FaMapMarkerAlt /> {property.location?.city || property.location?.address}, India</span>
+            {property.isFeatured && (
+              <>
+                <span className="meta-dot">·</span>
+                <span className="meta-fav"><FaStar color="#d89b4a" /> Guest Favorite</span>
+              </>
+            )}
           </div>
         </div>
 
         {/* Gallery */}
         <div className="property-gallery">
-          <div className="gallery-main" onClick={() => setSelectedImg(property.images[0])} style={{ cursor: "zoom-in" }}>
-            <img src={property.images[0]} alt={property.title} />
-          </div>
-          <div className="gallery-grid">
-            {property.images.slice(1, 5).map((img, i) => (
-              <div key={i} className="gallery-thumb" onClick={() => setSelectedImg(img)} style={{ cursor: "zoom-in" }}>
-                <img src={img} alt="" loading="lazy" />
+          {property.images && property.images.length > 0 && (
+            <>
+              <div className="gallery-main" onClick={() => setSelectedImg(property.images[0].url)} style={{ cursor: "zoom-in" }}>
+                <img src={property.images[0].url} alt={property.title} />
               </div>
-            ))}
-          </div>
+              <div className="gallery-grid">
+                {property.images.slice(1, 5).map((img, i) => (
+                  <div key={i} className="gallery-thumb" onClick={() => setSelectedImg(img.url)} style={{ cursor: "zoom-in" }}>
+                    <img src={img.url} alt="" loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Content */}
@@ -154,17 +187,17 @@ function PropertyDetails() {
           <div className="property-info">
             {/* Host */}
             <div className="host-box">
-              <div className="host-avatar">{property.host[0]}</div>
+              <div className="host-avatar">{property.host?.name ? property.host.name[0] : "H"}</div>
               <div>
-                <h3>Hosted by {property.host}</h3>
-                <p>Host since {property.hostSince} · Entire {property.category.slice(0, -1)} · Verified Host</p>
+                <h3>Hosted by {property.host?.name || "Homely Host"}</h3>
+                <p>Entire {property.category?.slice(0, -1)} · Verified Host</p>
               </div>
             </div>
 
             {/* Highlights */}
             <div className="highlights">
-              {property.highlights.map((h, i) => (
-                <div className="highlight-card" key={i}>{highlightIconMap[h.icon]}<span>{h.label}</span></div>
+              {property.highlights && property.highlights.map((h, i) => (
+                <div className="highlight-card" key={i}>{highlightIconMap[h.icon] || <FaCheckCircle />}<span>{h.label}</span></div>
               ))}
             </div>
 
@@ -178,7 +211,7 @@ function PropertyDetails() {
             <div className="amenities">
               <h2>What this place offers</h2>
               <div className="amenities-grid">
-                {property.amenities.map((amenity, i) => (
+                {property.amenities && property.amenities.map((amenity, i) => (
                   <div className="amenity" key={i}>
                     <span>{amenityIcons[amenity] || <FaCheckCircle />}</span>
                     <span>{amenity}</span>
@@ -189,9 +222,9 @@ function PropertyDetails() {
 
             {/* Reviews */}
             <div className="reviews-section">
-              <h2><FaStar /> {property.rating} · {property.reviews} reviews</h2>
+              <h2><FaStar /> {property.rating || "New"} · {property.reviewCount || 0} reviews</h2>
               <div className="reviews-grid">
-                {reviewsByProperty.map((r, i) => (
+                {dummyReviews.map((r, i) => (
                   <div className="review-card" key={i}>
                     <div className="reviewer-avatar">{r.avatar}</div>
                     <div>
@@ -208,12 +241,12 @@ function PropertyDetails() {
           {/* Booking Card */}
           <div className="booking-card">
             <div className="booking-price">
-              <span className="price-amount">{property.price}</span>
+              <span className="price-amount">₹{property.price?.toLocaleString()}</span>
               <span className="price-night">/ night</span>
             </div>
 
             <div className="booking-rating">
-              <FaStar /> {property.rating} · {property.reviews} reviews
+              <FaStar /> {property.rating || "New"} · {property.reviewCount || 0} reviews
             </div>
 
             <div className="booking-features">
@@ -224,8 +257,8 @@ function PropertyDetails() {
 
             <div className="booking-price-breakdown">
               <div className="price-row">
-                <span>{property.price} × 1 night</span>
-                <span>{property.price}</span>
+                <span>₹{property.price?.toLocaleString()} × 1 night</span>
+                <span>₹{property.price?.toLocaleString()}</span>
               </div>
               <div className="price-row">
                 <span>Service fee</span>
@@ -233,7 +266,7 @@ function PropertyDetails() {
               </div>
               <div className="price-row total-row">
                 <span>Total</span>
-                <span>₹{(property.priceNum + serviceFee).toLocaleString()}</span>
+                <span>₹{(property.price + serviceFee).toLocaleString()}</span>
               </div>
             </div>
 
