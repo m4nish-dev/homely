@@ -6,7 +6,8 @@ import logger from "./utils/logger.js";
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB globally for Vercel Serverless caching
-connectDB();
+// Top-level await ensures the DB connects BEFORE handling requests
+await connectDB();
 
 // Only run app.listen if we are NOT in Vercel. 
 // Vercel's serverless environment handles listening internally.
