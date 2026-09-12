@@ -1,40 +1,54 @@
-# 🏡 Homely — Modern Vacation Rental & Booking Platform
+<div align="center">
 
-[![Vercel Deployment](https://img.shields.io/badge/Deployment-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://homely-gilt.vercel.app)
-[![React 19](https://img.shields.io/badge/Frontend-React%2019%20%7C%20Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
-[![Node.js](https://img.shields.io/badge/Backend-Node.js%20%7C%20Express-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
-[![MongoDB](https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com)
-[![Razorpay](https://img.shields.io/badge/Payments-Razorpay-0C2340?style=for-the-badge&logo=razorpay&logoColor=white)](https://razorpay.com)
-[![Cloudinary](https://img.shields.io/badge/Media-Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com)
+# Homely
 
-**Homely** is an enterprise-ready, full-stack vacation rental marketplace built with the MERN stack. It features modern micro-interactions, atomic double-booking prevention, Razorpay cryptographic payment validation, Cloudinary multi-image uploads, dynamic review aggregation, automated transactional emails, and instant mobile-optimized PDF invoice generation.
+### Production-Grade Full-Stack Vacation Rental & Booking Platform
+
+[![Vercel Production](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://homely-gilt.vercel.app)
+[![React 19](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
+[![Express](https://img.shields.io/badge/Express_5-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB_Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com)
+[![Razorpay](https://img.shields.io/badge/Razorpay-02042B?style=for-the-badge&logo=razorpay&logoColor=3395FF)](https://razorpay.com)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)](https://cloudinary.com)
+[![JSON Web Tokens](https://img.shields.io/badge/JWT_Auth-black?style=for-the-badge&logo=JSON%20web%20tokens)](https://jwt.io)
+
+<br/>
+
+[**Live Demo**](https://homely-gilt.vercel.app) &nbsp;•&nbsp; [**Backend API**](https://homely-server-nine.vercel.app) &nbsp;•&nbsp; [**Architecture**](#system-architecture) &nbsp;•&nbsp; [**API Docs**](#api-reference) &nbsp;•&nbsp; [**Local Setup**](#local-development-setup)
+
+<br/>
+
+</div>
 
 ---
 
-## 📑 Table of Contents
+## Table of Contents
 
-- [Architectural Overview](#-architectural-overview)
-- [System Architecture Diagram](#-system-architecture)
-- [End-to-End Dynamic Workflows](#-end-to-end-dynamic-workflows)
+- [Architectural Overview](#architectural-overview)
+- [System Architecture](#system-architecture)
+- [End-to-End Dynamic Workflows](#end-to-end-dynamic-workflows)
   - [1. Authentication & Role-Based Access Control](#1-authentication--rbac-flow)
   - [2. Booking & Cryptographic Payment Lifecycle](#2-booking--cryptographic-payment-lifecycle)
   - [3. Favorites / Wishlist Synchronization](#3-favorites--wishlist-synchronization)
   - [4. Direct Mobile & Web Invoice Generation](#4-direct-mobile--web-invoice-generation)
-- [Database Schema & Entity Relationship](#-database-schema--entity-relationship)
-- [Key Features](#-key-features)
-- [Tech Stack](#-tech-stack)
-- [Project Directory Structure](#-project-directory-structure)
-- [Environment Configuration](#-environment-configuration)
-- [Local Development Setup](#-local-development-setup)
-- [API Reference](#-api-reference)
-- [Security & Production Hardening](#-security--production-hardening)
+- [Database Schema & Entity Relationship](#database-schema--entity-relationship)
+- [Key Features](#key-features)
+- [Tech Stack](#tech-stack)
+- [Project Directory Structure](#project-directory-structure)
+- [Environment Configuration](#environment-configuration)
+- [Local Development Setup](#local-development-setup)
+- [API Reference](#api-reference)
+- [Security & Production Hardening](#security--production-hardening)
+- [License](#license)
 
 ---
 
-## 🏛 Architectural Overview
+## Architectural Overview
 
 Homely utilizes a decoupled client-server architecture deployed on **Vercel Serverless Functions** with **MongoDB Atlas**:
-- **Client Tier**: React 19 SPA powered by Vite, utilizing responsive Vanilla CSS tokens, glassmorphism, and optimistic state updates.
+- **Client Tier**: React 19 Single Page Application powered by Vite, utilizing responsive Vanilla CSS tokens, glassmorphism, and optimistic state updates.
 - **Server Tier**: Express 5 application structured with RESTful design patterns, layered controllers, middlewares, and serverless-compatible stateless routing.
 - **Data & Transactions**: MongoDB Atlas with native multi-document ACID transactions ensuring zero race conditions during reservation checkouts.
 - **Third-Party Integrations**:
@@ -44,54 +58,83 @@ Homely utilizes a decoupled client-server architecture deployed on **Vercel Serv
 
 ---
 
-## 📐 System Architecture
+## System Architecture
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#0284c7', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0369a1', 'lineColor': '#0284c7'}}}%%
 flowchart TB
-    subgraph ClientLayer ["Client Layer (Vercel Edge CDN)"]
-        A["Single Page Application (React 19 + Vite)"]
-        B["Global State (AuthContext, ToastContext)"]
-        C["API Services (Axios Interceptors)"]
-        A --> B
-        B --> C
+    classDef clientNode fill:#0284c7,stroke:#0369a1,stroke-width:2px,color:#ffffff;
+    classDef edgeNode fill:#1e293b,stroke:#475569,stroke-width:2px,color:#f8fafc;
+    classDef serverNode fill:#059669,stroke:#047857,stroke-width:2px,color:#ffffff;
+    classDef dbNode fill:#15803d,stroke:#166534,stroke-width:2px,color:#ffffff;
+    classDef cloudNode fill:#4338ca,stroke:#3730a3,stroke-width:2px,color:#ffffff;
+    classDef payNode fill:#0369a1,stroke:#075985,stroke-width:2px,color:#ffffff;
+    classDef mailNode fill:#b45309,stroke:#92400e,stroke-width:2px,color:#ffffff;
+
+    subgraph ClientLayer ["Client Layer (Vercel CDN Edge)"]
+        SPA["React 19 SPA (Vite Engine)"]:::clientNode
+        State["Global Contexts (AuthContext, ToastContext)"]:::clientNode
+        Services["API Client (Axios Interceptors)"]:::clientNode
+        SPA --> State
+        State --> Services
     end
 
-    subgraph Gateway ["Edge Network & Security"]
-        DNS["Vercel Edge Network / Route Rewrites"]
-        CORS["CORS Sanitizer & Origin Normalizer"]
-        Helmet["Helmet Security Headers & Rate Limiting"]
-        DNS --> CORS --> Helmet
+    subgraph GatewayLayer ["Edge Gateway & Routing"]
+        Edge["Vercel Edge Network / SPA Rewrites"]:::edgeNode
+        Sanitizer["CORS Runtime Sanitizer"]:::edgeNode
+        Security["Helmet Security & Express Rate Limiter"]:::edgeNode
+        Edge --> Sanitizer --> Security
     end
 
     subgraph ServerLayer ["Serverless Backend Layer (@vercel/node)"]
-        API["Express 5 Application Entry"]
-        AuthMid["JWT & RBAC Middleware"]
-        Controllers["Controllers: Auth, Properties, Bookings, Payments, Reviews"]
-        API --> AuthMid --> Controllers
+        App["Express 5 Entry Point"]:::serverNode
+        Middlewares["JWT Authentication & RBAC Guards"]:::serverNode
+        Controllers["Controllers: Auth, Properties, Bookings, Payments, Reviews"]:::serverNode
+        App --> Middlewares --> Controllers
     end
 
-    subgraph DataAndCloud ["Data Persistence & Cloud Services"]
-        DB[("MongoDB Atlas (Mongoose ODM)")]
-        Cloudinary["Cloudinary CDN (Image Storage)"]
-        Razorpay["Razorpay Payment Gateway"]
-        SMTP["Transactional SMTP Service"]
+    subgraph InfrastructureLayer ["Data Persistence & Cloud Services"]
+        Atlas[("MongoDB Atlas (Mongoose Replica Set)")]:::dbNode
+        Cloudinary["Cloudinary CDN (Buffer Media Stream)"]:::cloudNode
+        Razorpay["Razorpay Gateway (HMAC Verification)"]:::payNode
+        SMTP["Nodemailer SMTP (Transactional Mailer)"]:::mailNode
     end
 
-    C -->|"HTTPS REST API"| DNS
-    Helmet --> API
-    Controllers -->|"ACID Transactions"| DB
-    Controllers -->|"Image Buffer Streams"| Cloudinary
-    Controllers -->|"Order Creation & HMAC Verification"| Razorpay
-    Controllers -->|"HTML Templates"| SMTP
+    Services -->|"HTTPS REST API"| Edge
+    Security --> App
+    Controllers -->|"ACID Transactions"| Atlas
+    Controllers -->|"Multi-part Uploads"| Cloudinary
+    Controllers -->|"Order API & Signatures"| Razorpay
+    Controllers -->|"HTML Confirmation Templates"| SMTP
 ```
 
 ---
 
-## 🔄 End-to-End Dynamic Workflows
+## End-to-End Dynamic Workflows
 
 ### 1. Authentication & RBAC Flow
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#0284c7',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#0369a1',
+    'actorBkg': '#0f172a',
+    'actorBorder': '#38bdf8',
+    'actorTextColor': '#ffffff',
+    'actorLineColor': '#38bdf8',
+    'signalColor': '#0284c7',
+    'signalTextColor': '#0f172a',
+    'labelBoxBkgColor': '#e0f2fe',
+    'labelBoxBorderColor': '#0284c7',
+    'labelTextColor': '#0369a1',
+    'activationBorderColor': '#0284c7',
+    'activationBkgColor': '#bae6fd',
+    'sequenceNumberColor': '#ffffff'
+  }
+}}%%
 sequenceDiagram
     autonumber
     actor User as User / Host / Admin
@@ -123,6 +166,26 @@ sequenceDiagram
 Homely employs MongoDB multi-document transactions to guarantee atomicity and prevent double-booking.
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#059669',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#047857',
+    'actorBkg': '#064e3b',
+    'actorBorder': '#34d399',
+    'actorTextColor': '#ffffff',
+    'actorLineColor': '#34d399',
+    'signalColor': '#059669',
+    'signalTextColor': '#064e3b',
+    'labelBoxBkgColor': '#d1fae5',
+    'labelBoxBorderColor': '#059669',
+    'labelTextColor': '#065f46',
+    'activationBorderColor': '#059669',
+    'activationBkgColor': '#a7f3d0',
+    'sequenceNumberColor': '#ffffff'
+  }
+}}%%
 sequenceDiagram
     autonumber
     actor Guest as Guest
@@ -173,6 +236,26 @@ sequenceDiagram
 ### 3. Favorites / Wishlist Synchronization
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#e11d48',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#be123c',
+    'actorBkg': '#881337',
+    'actorBorder': '#fb7185',
+    'actorTextColor': '#ffffff',
+    'actorLineColor': '#fb7185',
+    'signalColor': '#e11d48',
+    'signalTextColor': '#881337',
+    'labelBoxBkgColor': '#ffe4e6',
+    'labelBoxBorderColor': '#e11d48',
+    'labelTextColor': '#9f1239',
+    'activationBorderColor': '#e11d48',
+    'activationBkgColor': '#fecdd3',
+    'sequenceNumberColor': '#ffffff'
+  }
+}}%%
 sequenceDiagram
     autonumber
     actor User as User
@@ -200,6 +283,26 @@ sequenceDiagram
 ### 4. Direct Mobile & Web Invoice Generation
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#0d9488',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#0f766e',
+    'actorBkg': '#134e4a',
+    'actorBorder': '#2dd4bf',
+    'actorTextColor': '#ffffff',
+    'actorLineColor': '#2dd4bf',
+    'signalColor': '#0d9488',
+    'signalTextColor': '#134e4a',
+    'labelBoxBkgColor': '#ccfbf1',
+    'labelBoxBorderColor': '#0d9488',
+    'labelTextColor': '#115e59',
+    'activationBorderColor': '#0d9488',
+    'activationBkgColor': '#99f6e4',
+    'sequenceNumberColor': '#ffffff'
+  }
+}}%%
 sequenceDiagram
     autonumber
     actor User as Mobile or Desktop User
@@ -209,7 +312,7 @@ sequenceDiagram
     participant DB as MongoDB
     participant html2pdf as Browser html2pdf Engine
 
-    User->>Email: Taps "📥 Download PDF Invoice"
+    User->>Email: Taps "Download PDF Invoice"
     Email->>WebApp: Navigates to /invoice/:bookingId?download=true
     Note over WebApp: No Authentication Cookie Required!
     WebApp->>PublicAPI: GET /api/bookings/public-invoice/:bookingId
@@ -226,9 +329,21 @@ sequenceDiagram
 
 ---
 
-## 🗄 Database Schema & Entity Relationship
+## Database Schema & Entity Relationship
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryColor': '#0f172a',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#0284c7',
+    'lineColor': '#0284c7',
+    'tertiaryColor': '#f8fafc',
+    'attributeBackgroundColorEven': '#f8fafc',
+    'attributeBackgroundColorOdd': '#ffffff'
+  }
+}}%%
 erDiagram
     USER ||--o{ PROPERTY : "hosts"
     USER ||--o{ BOOKING : "reserves"
@@ -307,9 +422,9 @@ erDiagram
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-| Category | Features |
+| Domain | Capabilities |
 |---|---|
 | **Guest Experience** | Instant property search with category & price sorting, auto-playing image carousels, responsive modal lightbox, one-click wishlist toggling, and date calculation. |
 | **Booking & Checkout** | Concurrency-safe double-booking prevention, Razorpay payments, automated transactional emails with booking confirmation details. |
@@ -320,7 +435,7 @@ erDiagram
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 - **Framework**: [React 19](https://react.dev/) + [Vite](https://vitejs.dev/)
@@ -328,7 +443,7 @@ erDiagram
 - **Icons**: [React Icons](https://react-icons.github.io/react-icons/) (FontAwesome, Material Design)
 - **PDF Generation**: [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/)
 - **HTTP Client**: [Axios](https://axios-http.com/) with JWT authorization interceptors
-- **Styling**: Vanilla Modular CSS (Custom design system, flex/grid layouts, glassmorphism)
+- **Styling**: Modular CSS tokens, flex/grid layouts, glassmorphic UI components
 
 ### Backend
 - **Runtime**: [Node.js](https://nodejs.org/) (ES Modules)
@@ -342,7 +457,7 @@ erDiagram
 
 ---
 
-## 📂 Project Directory Structure
+## Project Directory Structure
 
 ```text
 homely/
@@ -403,7 +518,7 @@ homely/
 
 ---
 
-## ⚙️ Environment Configuration
+## Environment Configuration
 
 ### Backend Environment (`server/.env`)
 
@@ -447,7 +562,7 @@ VITE_RAZORPAY_KEY_ID=rzp_test_YourKeyId
 
 ---
 
-## 🚀 Local Development Setup
+## Local Development Setup
 
 ### Prerequisites
 - Node.js 18+ and npm installed
@@ -477,7 +592,7 @@ npm run dev             # Starts frontend on http://localhost:5173
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 ### Auth & User (`/api/auth`, `/api/users`)
 | Method | Endpoint | Access | Description |
@@ -510,7 +625,7 @@ npm run dev             # Starts frontend on http://localhost:5173
 
 ---
 
-## 🛡 Security & Production Hardening
+## Security & Production Hardening
 
 - **Stateless Serverless Execution**: Server instance handles runtime buffering, exports standard Express app instance (`export default app`), and disables disk-based log writing in production to comply with read-only filesystems.
 - **Strict Cryptographic Signatures**: Razorpay payments are validated via server-side HMAC-SHA256 hash checks (`crypto.createHmac`) prior to marking reservations as confirmed.
@@ -520,7 +635,7 @@ npm run dev             # Starts frontend on http://localhost:5173
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [ISC License](LICENSE).
-Built with ❤️ for modern travel and vacation rental experiences.
+Built for modern travel and vacation rental experiences.
