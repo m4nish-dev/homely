@@ -16,7 +16,7 @@
 
 <br/>
 
-[**Live Demo**](https://homely-gilt.vercel.app) &nbsp;•&nbsp; [**Backend API**](https://homely-server-nine.vercel.app) &nbsp;•&nbsp; [**Architecture**](#system-architecture) &nbsp;•&nbsp; [**API Docs**](#api-reference) &nbsp;•&nbsp; [**Local Setup**](#local-development-setup)
+[**Live Application**](https://homely-gilt.vercel.app) &nbsp;•&nbsp; [**Backend API**](https://homely-server-nine.vercel.app) &nbsp;•&nbsp; [**Architecture**](#system-architecture) &nbsp;•&nbsp; [**Workflows**](#dynamic-workflows) &nbsp;•&nbsp; [**API Docs**](#api-reference) &nbsp;•&nbsp; [**Local Setup**](#local-development-setup)
 
 <br/>
 
@@ -28,11 +28,11 @@
 
 - [Architectural Overview](#architectural-overview)
 - [System Architecture](#system-architecture)
-- [End-to-End Dynamic Workflows](#end-to-end-dynamic-workflows)
-  - [1. Authentication & Role-Based Access Control](#1-authentication--rbac-flow)
-  - [2. Booking & Cryptographic Payment Lifecycle](#2-booking--cryptographic-payment-lifecycle)
-  - [3. Favorites / Wishlist Synchronization](#3-favorites--wishlist-synchronization)
-  - [4. Direct Mobile & Web Invoice Generation](#4-direct-mobile--web-invoice-generation)
+- [Dynamic Workflows](#dynamic-workflows)
+  - [1. Authentication & Role-Based Access Control Workflow](#1-authentication--role-based-access-control-workflow)
+  - [2. Booking & Cryptographic Payment Lifecycle Workflow](#2-booking--cryptographic-payment-lifecycle-workflow)
+  - [3. Favorites & Wishlist Synchronization Workflow](#3-favorites--wishlist-synchronization-workflow)
+  - [4. Direct Mobile & Web Invoice Generation Workflow](#4-direct-mobile--web-invoice-generation-workflow)
 - [Database Schema & Entity Relationship](#database-schema--entity-relationship)
 - [Key Features](#key-features)
 - [Tech Stack](#tech-stack)
@@ -48,7 +48,7 @@
 ## Architectural Overview
 
 Homely utilizes a decoupled client-server architecture deployed on **Vercel Serverless Functions** with **MongoDB Atlas**:
-- **Client Tier**: React 19 Single Page Application powered by Vite, utilizing responsive Vanilla CSS tokens, glassmorphism, and optimistic state updates.
+- **Client Tier**: React 19 Single Page Application powered by Vite, utilizing responsive Vanilla CSS design system tokens, glassmorphism, and optimistic state updates.
 - **Server Tier**: Express 5 application structured with RESTful design patterns, layered controllers, middlewares, and serverless-compatible stateless routing.
 - **Data & Transactions**: MongoDB Atlas with native multi-document ACID transactions ensuring zero race conditions during reservation checkouts.
 - **Third-Party Integrations**:
@@ -61,25 +61,25 @@ Homely utilizes a decoupled client-server architecture deployed on **Vercel Serv
 ## System Architecture
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#0284c7', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#0369a1', 'lineColor': '#0284c7'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#0284c7', 'primaryTextColor': '#ffffff', 'primaryBorderColor': '#38bdf8', 'lineColor': '#60a5fa'}}}%%
 flowchart TB
-    classDef clientNode fill:#0284c7,stroke:#0369a1,stroke-width:2px,color:#ffffff;
-    classDef edgeNode fill:#1e293b,stroke:#475569,stroke-width:2px,color:#f8fafc;
-    classDef serverNode fill:#059669,stroke:#047857,stroke-width:2px,color:#ffffff;
-    classDef dbNode fill:#15803d,stroke:#166534,stroke-width:2px,color:#ffffff;
-    classDef cloudNode fill:#4338ca,stroke:#3730a3,stroke-width:2px,color:#ffffff;
-    classDef payNode fill:#0369a1,stroke:#075985,stroke-width:2px,color:#ffffff;
-    classDef mailNode fill:#b45309,stroke:#92400e,stroke-width:2px,color:#ffffff;
+    classDef clientNode fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef edgeNode fill:#334155,stroke:#94a3b8,stroke-width:2px,color:#f8fafc,font-weight:bold;
+    classDef serverNode fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef dbNode fill:#15803d,stroke:#4ade80,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef cloudNode fill:#6366f1,stroke:#a5b4fc,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef payNode fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef mailNode fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff,font-weight:bold;
 
-    subgraph ClientLayer ["Client Layer (Vercel CDN Edge)"]
+    subgraph ClientLayer ["Client Tier (Vercel CDN Edge)"]
         SPA["React 19 SPA (Vite Engine)"]:::clientNode
-        State["Global Contexts (AuthContext, ToastContext)"]:::clientNode
+        State["Global State (AuthContext, ToastContext)"]:::clientNode
         Services["API Client (Axios Interceptors)"]:::clientNode
         SPA --> State
         State --> Services
     end
 
-    subgraph GatewayLayer ["Edge Gateway & Routing"]
+    subgraph GatewayLayer ["Edge Gateway & Ingress"]
         Edge["Vercel Edge Network / SPA Rewrites"]:::edgeNode
         Sanitizer["CORS Runtime Sanitizer"]:::edgeNode
         Security["Helmet Security & Express Rate Limiter"]:::edgeNode
@@ -93,7 +93,7 @@ flowchart TB
         App --> Middlewares --> Controllers
     end
 
-    subgraph InfrastructureLayer ["Data Persistence & Cloud Services"]
+    subgraph InfrastructureLayer ["Persistence & Cloud Integrations"]
         Atlas[("MongoDB Atlas (Mongoose Replica Set)")]:::dbNode
         Cloudinary["Cloudinary CDN (Buffer Media Stream)"]:::cloudNode
         Razorpay["Razorpay Gateway (HMAC Verification)"]:::payNode
@@ -103,228 +103,133 @@ flowchart TB
     Services -->|"HTTPS REST API"| Edge
     Security --> App
     Controllers -->|"ACID Transactions"| Atlas
-    Controllers -->|"Multi-part Uploads"| Cloudinary
+    Controllers -->|"Multi-part Image Uploads"| Cloudinary
     Controllers -->|"Order API & Signatures"| Razorpay
-    Controllers -->|"HTML Confirmation Templates"| SMTP
+    Controllers -->|"HTML Booking Templates"| SMTP
 ```
 
 ---
 
-## End-to-End Dynamic Workflows
+## Dynamic Workflows
 
-### 1. Authentication & RBAC Flow
+### 1. Authentication & Role-Based Access Control Workflow
 
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'primaryColor': '#0284c7',
-    'primaryTextColor': '#ffffff',
-    'primaryBorderColor': '#0369a1',
-    'actorBkg': '#0f172a',
-    'actorBorder': '#38bdf8',
-    'actorTextColor': '#ffffff',
-    'actorLineColor': '#38bdf8',
-    'signalColor': '#0284c7',
-    'signalTextColor': '#0f172a',
-    'labelBoxBkgColor': '#e0f2fe',
-    'labelBoxBorderColor': '#0284c7',
-    'labelTextColor': '#0369a1',
-    'activationBorderColor': '#0284c7',
-    'activationBkgColor': '#bae6fd',
-    'sequenceNumberColor': '#ffffff'
-  }
-}}%%
-sequenceDiagram
-    autonumber
-    actor User as User / Host / Admin
-    participant Client as React App
-    participant AuthAPI as Express Auth Router
-    participant DB as MongoDB Atlas
+%%{init: {'theme': 'base', 'themeVariables': {'lineColor': '#38bdf8', 'textColor': '#ffffff'}}}%%
+flowchart LR
+    classDef startNode fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef processNode fill:#1e40af,stroke:#60a5fa,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef decisionNode fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef successNode fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef errorNode fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef roleNode fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff,font-weight:bold;
 
-    User->>Client: Enters credentials / OAuth
-    Client->>AuthAPI: POST /api/auth/login
-    AuthAPI->>DB: User.findOne({ email }).select('+password')
-    DB-->>AuthAPI: User record (bcrypt hash)
-    AuthAPI->>AuthAPI: bcrypt.compare(password, hash)
-    alt Invalid Credentials
-        AuthAPI-->>Client: 401 Unauthorized
-        Client-->>User: Floating Toast Error
-    else Valid Credentials
-        AuthAPI->>AuthAPI: jwt.sign({ id, role }, JWT_SECRET)
-        AuthAPI-->>Client: 200 OK + JWT Token + User Profile
-        Client->>Client: localStorage.setItem('token', token)
-        Client->>Client: Hydrate AuthContext State
-        Client-->>User: Redirect to dashboard / requested route
-    end
+    A["User Inputs Credentials / OAuth"]:::startNode --> B["Frontend Auth Service (Axios)"]:::processNode
+    B --> C["POST /api/auth/login"]:::processNode
+    C --> D["MongoDB Query (Bcrypt Hash Validation)"]:::processNode
+    D --> E{"Credentials Valid?"}:::decisionNode
+    E -- "Invalid" --> F["401 Unauthorized -> In-App Toast Error"]:::errorNode
+    E -- "Valid" --> G["Sign JWT Access Token"]:::successNode
+    G --> H["Store in LocalStorage & Cookies"]:::successNode
+    H --> I["Hydrate Global AuthContext"]:::processNode
+    I --> J{"User Role Check"}:::decisionNode
+    J -- "role: 'admin'" --> K["Admin Control Center (/admin)"]:::roleNode
+    J -- "role: 'host'" --> L["Host Dashboard (/host)"]:::roleNode
+    J -- "role: 'user'" --> M["Guest Booking & Wishlist (/favorites)"]:::roleNode
 ```
 
 ---
 
-### 2. Booking & Cryptographic Payment Lifecycle
-
-Homely employs MongoDB multi-document transactions to guarantee atomicity and prevent double-booking.
+### 2. Booking & Cryptographic Payment Lifecycle Workflow
 
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'primaryColor': '#059669',
-    'primaryTextColor': '#ffffff',
-    'primaryBorderColor': '#047857',
-    'actorBkg': '#064e3b',
-    'actorBorder': '#34d399',
-    'actorTextColor': '#ffffff',
-    'actorLineColor': '#34d399',
-    'signalColor': '#059669',
-    'signalTextColor': '#064e3b',
-    'labelBoxBkgColor': '#d1fae5',
-    'labelBoxBorderColor': '#059669',
-    'labelTextColor': '#065f46',
-    'activationBorderColor': '#059669',
-    'activationBkgColor': '#a7f3d0',
-    'sequenceNumberColor': '#ffffff'
-  }
-}}%%
-sequenceDiagram
-    autonumber
-    actor Guest as Guest
-    participant Client as React SPA
-    participant Server as Express Server
-    participant DB as MongoDB (Replica Set)
-    participant Razorpay as Razorpay API
+%%{init: {'theme': 'base', 'themeVariables': {'lineColor': '#34d399', 'textColor': '#ffffff'}}}%%
+flowchart TD
+    classDef bookingNode fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef txNode fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef payNode fill:#2563eb,stroke:#60a5fa,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef checkNode fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef errorNode fill:#dc2626,stroke:#f87171,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef doneNode fill:#10b981,stroke:#6ee7b7,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef notifyNode fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff,font-weight:bold;
 
-    Guest->>Client: Selects Dates & Clicks "Reserve Now"
-    Client->>Server: POST /api/bookings { propertyId, checkIn, checkOut, guests }
-    Server->>DB: startTransaction()
-    Server->>DB: Property.isAvailable(checkIn, checkOut)
-    alt Dates Conflict
-        Server->>DB: abortTransaction()
-        Server-->>Client: 409 Conflict: Dates Already Booked
-        Client-->>Guest: Toast: "Dates no longer available"
-    else Dates Available
-        Server->>DB: Booking.create({ status: 'pending', paymentStatus: 'pending' })
-        Server->>DB: commitTransaction()
-        Server-->>Client: 201 Created + bookingId
+    subgraph Phase1 ["Phase 1: Atomic Concurrency Check (MongoDB Session)"]
+        A["Guest Selects Dates & Guests"]:::bookingNode --> B["POST /api/bookings"]:::bookingNode
+        B --> C["MongoDB Session: startTransaction()"]:::txNode
+        C --> D{"Dates Currently Available?"}:::checkNode
+        D -- "Conflict (Already Booked)" --> E["abortTransaction() -> 409 Conflict Toast"]:::errorNode
+        D -- "Available" --> F["Booking Created (status: 'pending')"]:::txNode
+        F --> G["commitTransaction() -> Return bookingId"]:::txNode
     end
 
-    Client->>Server: POST /api/payments/create-order { bookingId }
-    Server->>Razorpay: razorpay.orders.create({ amount, currency: 'INR' })
-    Razorpay-->>Server: orderId
-    Server-->>Client: 200 OK { orderId, amount, key }
+    subgraph Phase2 ["Phase 2: Razorpay Gateway Checkout"]
+        G --> H["POST /api/payments/create-order"]:::payNode
+        H --> I["Razorpay Orders API (Amount in INR)"]:::payNode
+        I --> J["Client Opens Razorpay Checkout Modal (UPI / Card)"]:::payNode
+        J --> K["Payment Success -> Returns Signature & Payment ID"]:::payNode
+    end
 
-    Client->>Guest: Mounts Razorpay Checkout Modal
-    Guest->>Razorpay: Submits UPI / Card Payment
-    Razorpay-->>Client: Returns { razorpay_payment_id, razorpay_order_id, razorpay_signature }
-
-    Client->>Server: POST /api/payments/verify { signature, ids }
-    Server->>Server: crypto.createHmac('sha256').update(order_id + '|' + payment_id)
-    alt Signature Valid
-        Server->>DB: Payment.create({ status: 'paid' })
-        Server->>DB: Booking.findByIdAndUpdate({ status: 'confirmed', paymentStatus: 'paid' })
-        Server->>Server: Generate HTML Invoice Template
-        Server-->>SMTP: Send Email with Direct Mobile Download Link
-        Server-->>Client: 200 OK { success: true }
-        Client-->>Guest: Redirect to /booking-success
-    else Signature Invalid
-        Server-->>Client: 400 Bad Request: Cryptographic verification failed
+    subgraph Phase3 ["Phase 3: Cryptographic Validation & Instant Fulfillment"]
+        K --> L["POST /api/payments/verify"]:::payNode
+        L --> M{"HMAC-SHA256 Hash Verification"}:::checkNode
+        M -- "Mismatch" --> N["Security Exception: Cryptographic Failure"]:::errorNode
+        M -- "Valid Signature" --> O["Update Booking: status = 'confirmed', paymentStatus = 'paid'"]:::doneNode
+        O --> P["Save Payment Audit Record to MongoDB"]:::doneNode
+        P --> Q["Nodemailer Sends Confirmation Email with PDF Download Link"]:::notifyNode
+        Q --> R["Client Redirects to /booking-success with Live Invoice"]:::doneNode
     end
 ```
 
 ---
 
-### 3. Favorites / Wishlist Synchronization
+### 3. Favorites & Wishlist Synchronization Workflow
 
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'primaryColor': '#e11d48',
-    'primaryTextColor': '#ffffff',
-    'primaryBorderColor': '#be123c',
-    'actorBkg': '#881337',
-    'actorBorder': '#fb7185',
-    'actorTextColor': '#ffffff',
-    'actorLineColor': '#fb7185',
-    'signalColor': '#e11d48',
-    'signalTextColor': '#881337',
-    'labelBoxBkgColor': '#ffe4e6',
-    'labelBoxBorderColor': '#e11d48',
-    'labelTextColor': '#9f1239',
-    'activationBorderColor': '#e11d48',
-    'activationBkgColor': '#fecdd3',
-    'sequenceNumberColor': '#ffffff'
-  }
-}}%%
-sequenceDiagram
-    autonumber
-    actor User as User
-    participant Card as PropertyCard / PopularStays
-    participant Context as AuthContext & ToastContext
-    participant API as User API Router
-    participant DB as MongoDB Atlas
+%%{init: {'theme': 'base', 'themeVariables': {'lineColor': '#f43f5e', 'textColor': '#ffffff'}}}%%
+flowchart LR
+    classDef clickNode fill:#e11d48,stroke:#fda4af,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef checkNode fill:#d97706,stroke:#fbbf24,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef warnNode fill:#ea580c,stroke:#fdba74,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef uiNode fill:#be185d,stroke:#f472b6,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef apiNode fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef dbNode fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef syncNode fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff,font-weight:bold;
 
-    User->>Card: Clicks Heart Icon on Card
-    alt User Not Logged In
-        Card->>Context: toast.warning("Please log in to save properties")
-    else User Logged In
-        Card->>Card: Optimistic UI toggle (Heart turns red)
-        Card->>API: POST /api/users/favorites { propertyId }
-        API->>DB: User.findByIdAndUpdate({ $addToSet: { favorites: propertyId } })
-        DB-->>API: Updated user document
-        API-->>Card: 200 OK { success: true, favorites }
-        Card->>Context: Update user.favorites & toast.success("Saved to your wishlist!")
-        Note over User,DB: Navigating to /favorites immediately renders the newly saved property
-    end
+    A["User Clicks Heart Icon on Any Property Card"]:::clickNode --> B{"User Authenticated?"}:::checkNode
+    B -- "No" --> C["In-App Toast: 'Please log in to save properties'"]:::warnNode
+    B -- "Yes" --> D["Optimistic UI: Heart Immediately Turns Rose/Red"]:::uiNode
+    D --> E["userService.addFavorite(propertyId)"]:::apiNode
+    E --> F["POST /api/users/favorites"]:::apiNode
+    F --> G["MongoDB: User.updateOne($addToSet: { favorites: id })"]:::dbNode
+    G --> H["Sync Global AuthContext Favorites State"]:::syncNode
+    H --> I["Property Instantly Displayed at /favorites"]:::syncNode
+    H --> J["Navbar Wishlist Icon Count Updated"]:::syncNode
 ```
 
 ---
 
-### 4. Direct Mobile & Web Invoice Generation
+### 4. Direct Mobile & Web Invoice Generation Workflow
 
 ```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'primaryColor': '#0d9488',
-    'primaryTextColor': '#ffffff',
-    'primaryBorderColor': '#0f766e',
-    'actorBkg': '#134e4a',
-    'actorBorder': '#2dd4bf',
-    'actorTextColor': '#ffffff',
-    'actorLineColor': '#2dd4bf',
-    'signalColor': '#0d9488',
-    'signalTextColor': '#134e4a',
-    'labelBoxBkgColor': '#ccfbf1',
-    'labelBoxBorderColor': '#0d9488',
-    'labelTextColor': '#115e59',
-    'activationBorderColor': '#0d9488',
-    'activationBkgColor': '#99f6e4',
-    'sequenceNumberColor': '#ffffff'
-  }
-}}%%
-sequenceDiagram
-    autonumber
-    actor User as Mobile or Desktop User
-    participant Email as Email Client
-    participant WebApp as Homely Client (/invoice/:bookingId)
-    participant PublicAPI as Public Invoice API
-    participant DB as MongoDB
-    participant html2pdf as Browser html2pdf Engine
+%%{init: {'theme': 'base', 'themeVariables': {'lineColor': '#0d9488', 'textColor': '#ffffff'}}}%%
+flowchart TD
+    classDef mailNode fill:#7c3aed,stroke:#c084fc,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef routeNode fill:#0284c7,stroke:#38bdf8,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef apiNode fill:#059669,stroke:#34d399,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef renderNode fill:#0d9488,stroke:#2dd4bf,stroke-width:2px,color:#ffffff,font-weight:bold;
+    classDef pdfNode fill:#10b981,stroke:#6ee7b7,stroke-width:2px,color:#ffffff,font-weight:bold;
 
-    User->>Email: Taps "Download PDF Invoice"
-    Email->>WebApp: Navigates to /invoice/:bookingId?download=true
-    Note over WebApp: No Authentication Cookie Required!
-    WebApp->>PublicAPI: GET /api/bookings/public-invoice/:bookingId
-    PublicAPI->>DB: Booking.findOne({ bookingId }).populate('property user')
-    DB-->>PublicAPI: Booking data
-    PublicAPI-->>WebApp: 200 OK { booking }
-    WebApp->>WebApp: Renders Clean Responsive Invoice Document
-    alt URL contains ?download=true
-        WebApp->>html2pdf: Auto-trigger html2pdf().from(invoiceRef).save()
-        html2pdf-->>User: File saved: Homely_Invoice_BK12345.pdf
-    end
-    User->>WebApp: Optional: Manual "Download PDF" or "Print" button
+    A["Confirmation Email Delivered to User Inbox"]:::mailNode --> B["User Taps 'Download PDF Invoice' Button"]:::mailNode
+    B --> C["Direct Link: /invoice/:bookingId?download=true"]:::routeNode
+    C --> D["Tokenless Access (No Login / Cookies Required)"]:::routeNode
+    D --> E["GET /api/bookings/public-invoice/:bookingId"]:::apiNode
+    E --> F["MongoDB Fetches Sanitized Booking & Property Data"]:::apiNode
+    F --> G["React Mounts Responsive Official Invoice Document"]:::renderNode
+    G --> H{"URL Contains download=true?"}:::renderNode
+    H -- "Yes (From Mobile Email)" --> I["Auto-Invoke Client html2pdf.js Engine"]:::pdfNode
+    H -- "No (Manual Browser View)" --> J["User Clicks 'Download PDF' or 'Print'"]:::pdfNode
+    I --> K["File Automatically Saved to Device Downloads Folder"]:::pdfNode
+    J --> K
 ```
 
 ---
@@ -335,13 +240,13 @@ sequenceDiagram
 %%{init: {
   'theme': 'base',
   'themeVariables': {
-    'primaryColor': '#0f172a',
+    'primaryColor': '#1e293b',
     'primaryTextColor': '#ffffff',
-    'primaryBorderColor': '#0284c7',
-    'lineColor': '#0284c7',
-    'tertiaryColor': '#f8fafc',
-    'attributeBackgroundColorEven': '#f8fafc',
-    'attributeBackgroundColorOdd': '#ffffff'
+    'primaryBorderColor': '#38bdf8',
+    'lineColor': '#38bdf8',
+    'tertiaryColor': '#0f172a',
+    'attributeBackgroundColorEven': '#1e293b',
+    'attributeBackgroundColorOdd': '#334155'
   }
 }}%%
 erDiagram
