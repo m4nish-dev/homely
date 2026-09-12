@@ -300,7 +300,12 @@ function Booking() {
               {isProcessing ? "Processing Secure Payment..." : "Pay with Razorpay"}
             </button>
 
-            <p className="booking-note">You'll be charged ₹{total.toLocaleString()} securely via Razorpay.</p>
+            <div style={{ background: "#eef2ff", padding: "12px", borderRadius: "8px", marginTop: "16px", border: "1px solid #c7d2fe", fontSize: "13px", color: "#4f46e5", textAlign: "left" }}>
+              <strong>🧪 Test Mode Active:</strong> No real money will be charged.
+              <br />Use Card: <b>4111 1111 1111 1111</b>
+              <br />Expiry: Any future date (e.g., <b>12/28</b>)
+              <br />CVV: Any 3 digits (e.g., <b>123</b>)
+            </div>
 
             <div className="trust-badges">
               <div className="trust-badge"><FaLock color="#6b7280" /> Secure Payment</div>

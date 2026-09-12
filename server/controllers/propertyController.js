@@ -277,3 +277,16 @@ export const checkAvailability = asyncHandler(async (req, res, next) => {
     available: isAvailable,
   });
 });
+
+// @desc    Get properties owned by the logged in host
+// @route   GET /api/properties/host/my-properties
+// @access  Private (Host)
+export const getMyProperties = asyncHandler(async (req, res, next) => {
+  const properties = await Property.find({ host: req.user._id }).sort('-createdAt');
+
+  res.status(200).json({
+    success: true,
+    count: properties.length,
+    properties,
+  });
+});

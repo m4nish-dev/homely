@@ -106,7 +106,7 @@ bookingSchema.index({ user: 1, status: 1 });
 bookingSchema.index({ property: 1, checkIn: 1, checkOut: 1 });
 
 // Pre-validate hook to calculate required fields before Mongoose validation occurs
-bookingSchema.pre('validate', function (next) {
+bookingSchema.pre('validate', function () {
   // 1. Validate Dates
   if (this.checkIn && this.checkOut) {
     const today = new Date();
@@ -139,8 +139,6 @@ bookingSchema.pre('validate', function (next) {
     const randomDigits = Math.floor(100000 + Math.random() * 900000);
     this.bookingId = `HM${randomDigits}`;
   }
-
-  next();
 });
 
 const Booking = mongoose.model('Booking', bookingSchema);

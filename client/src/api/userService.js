@@ -23,6 +23,10 @@ const userService = {
     });
     return response.data;
   },
+  becomeHost: async () => {
+    const response = await api.put('/users/become-host');
+    return response.data;
+  }
 };
 
 export default userService;

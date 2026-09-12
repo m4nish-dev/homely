@@ -183,3 +183,28 @@ export const deleteAccount = asyncHandler(async (req, res, next) => {
     message: 'Account successfully anonymized and deleted',
   });
 });
+
+// @desc    Upgrade user to host role
+// @route   PUT /api/users/become-host
+// @access  Private
+export const becomeHost = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  if (user.role === 'host' || user.role === 'admin') {
+    res.status(400);
+    throw new Error(`User is already a ${user.role}`);
+  }
+
+  user.role = 'host';
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});

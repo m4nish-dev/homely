@@ -1,8 +1,105 @@
 /* ========================= */
+/* USER AVATAR & DROPDOWN */
+/* ========================= */
+.user-avatar-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #2f3a2f;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #d89b4a;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.user-avatar-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.profile-menu-wrap {
+  position: relative;
+}
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 200px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  padding: 14px;
+  z-index: 9999;
+  border: 1px solid #f0ede6;
+}
+.profile-dropdown-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: #111827;
+}
+.profile-dropdown-email {
+  font-size: 13px;
+  color: #6b7280;
+  word-break: break-all;
+}
+.profile-dropdown-link {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.profile-dropdown-link:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+.navbar-favorites-icon {
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f9fafb;
+}
+.navbar-favorites-icon:hover {
+  background: #f3f4f6;
+  transform: scale(1.05);
+}
+.profile-dropdown-logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #e53e3e;
+  padding: 6px 0;
+  font-weight: 600;
+}
+.profile-dropdown-logout:hover {
+  color: #c53030;
+}
+
+/* ========================= */
 /* NAVBAR BASE */
 /* ========================= */
 
 .navbar {
+
   display: flex;
   justify-content: space-between;
   align-items: center;

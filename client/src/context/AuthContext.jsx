@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           const data = await authService.getMe();
-          setUser(data.user);
+          setUser(data.data || data.user);
         } catch (error) {
           console.error('Failed to hydrate session:', error);
           localStorage.removeItem('token');

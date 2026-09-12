@@ -7,3 +7,53 @@
   overflow-y: auto;
   scrollbar-width: thin;
 }
+
+/* Password Strength & Requirements */
+.pw-strength-wrap {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.pw-strength-bar {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  height: 6px;
+}
+.pw-strength-segment {
+  flex: 1;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+.pw-strength-label {
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 45px;
+  text-align: right;
+  transition: color 0.3s ease;
+}
+
+.pw-requirements {
+  margin-top: 12px;
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pw-req-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.pw-req-item.met {
+  color: #38a169;
+}
+.pw-req-item.unmet {
+  color: #718096;
+}

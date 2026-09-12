@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar/Navbar";
 import HeroBanner from "./components/HeroBanner/HeroBanner";
 import PopularDestinations from "./components/PopularDestinations/PopularDestinations";
 import PropertyListings from "./components/PropertyListings/PropertyListings";
+import NewlyAddedProperties from "./components/NewlyAddedProperties/NewlyAddedProperties";
 import SpecialOffers from "./components/SpecialOffers/SpecialOffers";
 import HowItWorks from "./components/HowItWorks/HowItWorks";
 import GuestFavorites from "./components/GuestFavorites/GuestFavorites";
@@ -18,6 +19,11 @@ import SearchResults from "./pages/SearchResults/SearchResults";
 import Booking from "./pages/Booking/Booking";
 import BookingSuccess from "./pages/BookingSuccess/BookingSuccess";
 import NotFound from "./pages/NotFound/NotFound";
+import Favorites from "./pages/Favorites/Favorites";
+import MyBookings from "./pages/MyBookings/MyBookings";
+import Settings from "./pages/Settings/Settings";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import HostDashboard from "./pages/Host/HostDashboard";
 
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
@@ -54,6 +60,7 @@ function HomePage() {
       {/* Page Sections */}
       <HeroBanner isScrolled={isScrolled} />
       <PopularDestinations />
+      <NewlyAddedProperties />
       <PropertyListings />
       <SpecialOffers />
       <HowItWorks />
@@ -96,6 +103,11 @@ function App() {
         <Route path="/property/:id" element={<PropertyDetails />} />
         <Route path="/booking/:id" element={<Booking />} />
         <Route path="/booking-success" element={<BookingSuccess />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/host" element={<HostDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

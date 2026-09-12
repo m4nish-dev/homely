@@ -6,6 +6,7 @@ import {
   removeFavorite,
   getFavorites,
   deleteAccount,
+  becomeHost,
 } from '../controllers/userController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { upload } from '../middleware/uploadMiddleware.js';
@@ -23,6 +24,7 @@ router.delete('/favorites/:propertyId', removeFavorite);
 // Profile Management
 router.put('/profile', updateProfile);
 router.put('/avatar', upload.single('avatar'), updateAvatar);
+router.put('/become-host', becomeHost);
 router.delete('/account', deleteAccount);
 
 export default router;

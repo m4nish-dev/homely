@@ -1,59 +1,67 @@
 import "./PropertyListings.css";
-import { FaHeart, FaChevronLeft, FaChevronRight, FaStar, FaArrowRight, FaHome } from "react-icons/fa";
+import { FaHeart, FaChevronLeft, FaChevronRight, FaStar, FaArrowRight, FaHome, FaSearch } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import ALL_PROPERTIES from "../../data/properties";
+import propertyService from "../../api/propertyService";
 
 function PropertyListings() {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState("All");
   const [favorites, setFavorites] = useState([]);
   const [currentImages, setCurrentImages] = useState({});
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const properties = ALL_PROPERTIES;
   const filters = ["All", "Hotels", "Villas", "Flats", "Resorts", "Cabins"];
 
-  const filteredProperties =
-    activeFilter === "All"
-      ? properties
-      : properties.filter((p) => p.category === activeFilter);
+  useEffect(() => {
+    const fetchProperties = async () => {
+      setLoading(true);
+      try {
+        const data = await propertyService.getAll({
+          category: activeFilter === "All" ? "" : activeFilter,
+          limit: 12,
+          sortBy: "Recommended",
+        });
+        setProperties(data.properties || []);
+      } catch (err) {
+        console.error("Failed to fetch properties", err);
+        setProperties([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProperties();
+  }, [activeFilter]);
 
-  // Auto-play all image carousels
+  // Auto-play image carousels
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImages((prev) => {
-        const nextState = { ...prev };
-        filteredProperties.forEach((property) => {
-          const current = nextState[property.id] || 0;
-          nextState[property.id] = (current + 1) % property.images.length;
+        const next = { ...prev };
+        properties.forEach((p) => {
+          const cur = next[p._id] || 0;
+          next[p._id] = (cur + 1) % (p.images?.length || 1);
         });
-        return nextState;
+        return next;
       });
-    }, 2500);
+    }, 2800);
     return () => clearInterval(timer);
-  }, [filteredProperties]);
+  }, [properties]);
 
   const toggleFavorite = (id, e) => {
     e.stopPropagation();
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+    setFavorites((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]);
   };
 
-  const nextImage = (propertyId, totalImages, e) => {
+  const nextImage = (id, total, e) => {
     e.stopPropagation();
-    setCurrentImages((prev) => ({
-      ...prev,
-      [propertyId]: ((prev[propertyId] || 0) + 1) % totalImages,
-    }));
+    setCurrentImages((prev) => ({ ...prev, [id]: ((prev[id] || 0) + 1) % total }));
   };
 
-  const prevImage = (propertyId, totalImages, e) => {
+  const prevImage = (id, total, e) => {
     e.stopPropagation();
-    setCurrentImages((prev) => ({
-      ...prev,
-      [propertyId]: ((prev[propertyId] || 0) - 1 + totalImages) % totalImages,
-    }));
+    setCurrentImages((prev) => ({ ...prev, [id]: ((prev[id] || 0) - 1 + total) % total }));
   };
 
   return (
@@ -62,7 +70,7 @@ function PropertyListings() {
         <div>
           <span className="listings-eyebrow"><FaHome /> Handpicked For You</span>
           <h2>Popular Stays</h2>
-          <p>Discover handpicked stays loved by travelers around the world.</p>
+          <p>Discover handpicked stays loved by travelers around India.</p>
         </div>
         <button className="listings-view-all" onClick={() => navigate("/search")}>
           View All <FaArrowRight />
@@ -81,79 +89,71 @@ function PropertyListings() {
         ))}
       </div>
 
-      <div className="listings-grid">
-        {filteredProperties.map((property) => (
-          <div
-            key={property.id}
-            className="listing-card"
-            onClick={() => navigate(`/property/${property.id}`)}
-          >
-            <div className="image-container">
-              <img
-                src={property.images[currentImages[property.id] || 0]}
-                alt={property.title}
-                loading="lazy"
-              />
-
-              <div className="card-badges">
-                {property.isNew && <div className="new-badge">New</div>}
-                <div className="guest-badge"><FaStar color="#d89b4a" style={{ marginRight: "4px" }} /> Guest Fave</div>
-              </div>
-
-              <button
-                className="favorite-btn"
-                onClick={(e) => toggleFavorite(property.id, e)}
-                aria-label="Save to wishlist"
+      {loading ? (
+        <div style={{ textAlign: "center", padding: "60px 20px", color: "#6b7280" }}>
+          <p>Loading stays...</p>
+        </div>
+      ) : (
+        <div className="listings-grid">
+          {properties.map((property) => {
+            const imgIdx = currentImages[property._id] || 0;
+            const imgs = property.images || [];
+            const imgUrl = imgs[imgIdx]?.url || imgs[0]?.url || "";
+            return (
+              <div
+                key={property._id}
+                className="listing-card"
+                onClick={() => navigate(`/property/${property._id}`)}
               >
-                <FaHeart
-                  color={favorites.includes(property.id) ? "#ff385c" : "rgba(255,255,255,0.9)"}
-                />
-              </button>
+                <div className="image-container">
+                  <img src={imgUrl} alt={property.title} loading="lazy" />
 
-              <button
-                className="carousel-btn left"
-                onClick={(e) => prevImage(property.id, property.images.length, e)}
-              >
-                <FaChevronLeft />
-              </button>
+                  <div className="card-badges">
+                    {property.isNewlyListed && <div className="new-badge">New</div>}
+                    {property.isFeatured && (
+                      <div className="guest-badge"><FaStar color="#d89b4a" style={{ marginRight: "4px" }} /> Guest Fave</div>
+                    )}
+                  </div>
 
-              <button
-                className="carousel-btn right"
-                onClick={(e) => nextImage(property.id, property.images.length, e)}
-              >
-                <FaChevronRight />
-              </button>
+                  <button
+                    className="favorite-btn"
+                    onClick={(e) => toggleFavorite(property._id, e)}
+                    aria-label="Save to wishlist"
+                  >
+                    <FaHeart color={favorites.includes(property._id) ? "#ff385c" : "rgba(255,255,255,0.9)"} />
+                  </button>
 
-              <div className="carousel-dots">
-                {property.images.map((_, index) => (
-                  <span
-                    key={index}
-                    className={`dot ${index === (currentImages[property.id] || 0) ? "active-dot" : ""}`}
-                  />
-                ))}
+                  {imgs.length > 1 && (
+                    <>
+                      <button className="carousel-btn left" onClick={(e) => prevImage(property._id, imgs.length, e)}><FaChevronLeft /></button>
+                      <button className="carousel-btn right" onClick={(e) => nextImage(property._id, imgs.length, e)}><FaChevronRight /></button>
+                      <div className="carousel-dots">
+                        {imgs.map((_, idx) => (
+                          <span key={idx} className={`dot ${idx === imgIdx ? "active-dot" : ""}`} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="listing-info">
+                  <div className="top-row">
+                    <h3 className="card-title">{property.location?.city || property.location}</h3>
+                    <span className="rating"><FaStar /> {property.rating || "New"}</span>
+                  </div>
+                  <p className="subtitle">{property.title}</p>
+                  <p className="subtitle date-added">{property.reviewCount || 0} reviews</p>
+                  <h4 className="price">₹{property.price?.toLocaleString()}<span className="night-text"> night</span></h4>
+                </div>
               </div>
-            </div>
+            );
+          })}
+        </div>
+      )}
 
-            <div className="listing-info">
-              <div className="top-row">
-                <h3 className="card-title">{property.location}</h3>
-                <span className="rating">
-                  <FaStar /> {property.rating}
-                </span>
-              </div>
-              <p className="subtitle">{property.title}</p>
-              <p className="subtitle date-added">{property.reviews} reviews</p>
-              <h4 className="price">
-                {property.price}
-                <span className="night-text"> night</span>
-              </h4>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filteredProperties.length === 0 && (
+      {!loading && properties.length === 0 && (
         <div className="empty-state">
+          <FaSearch style={{ fontSize: 32, color: "#d89b4a", marginBottom: 12 }} />
           <p>No properties found in this category.</p>
         </div>
       )}

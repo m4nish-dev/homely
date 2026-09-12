@@ -13,6 +13,20 @@ const propertyService = {
     const response = await api.post(`/properties/${id}/availability`, { checkIn, checkOut });
     return response.data;
   },
+  getMyProperties: async () => {
+    const response = await api.get('/properties/host/my-properties');
+    return response.data;
+  },
+  createProperty: async (formData) => {
+    const response = await api.post('/properties', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+  },
+  deleteProperty: async (id) => {
+    const response = await api.delete(`/properties/${id}`);
+    return response.data;
+  }
 };
 
 export default propertyService;

@@ -4,6 +4,7 @@ import Booking from '../models/Booking.js';
 import Payment from '../models/Payment.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import sendEmail from '../utils/sendEmail.js';
+import { bookingConfirmationTemplate } from '../utils/emailTemplates.js';
 
 // @desc    Create Razorpay Order
 // @route   POST /api/payments/order
@@ -104,7 +105,7 @@ export const verifyPayment = asyncHandler(async (req, res, next) => {
   await payment.save();
 
   // Mark booking as fully confirmed
-  const booking = await Booking.findById(payment.booking).populate('user', 'name email');
+  const booking = await Booking.findById(payment.booking).populate('user', 'name email').populate('property', 'title');
   booking.status = 'confirmed';
   booking.paymentStatus = 'paid';
   await booking.save({ validateBeforeSave: false });
@@ -117,6 +118,7 @@ export const verifyPayment = asyncHandler(async (req, res, next) => {
       email: booking.user.email,
       subject: 'Booking Confirmed - Homely',
       message,
+      html: bookingConfirmationTemplate(booking),
     });
   } catch (err) {
     console.error('Email confirmation could not be sent:', err);

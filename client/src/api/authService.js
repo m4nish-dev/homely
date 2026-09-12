@@ -25,6 +25,14 @@ const authService = {
     const response = await api.put(`/auth/reset-password/${token}`, { password: newPassword });
     return response.data;
   },
+  updatePassword: async (passwordData) => {
+    const response = await api.put('/auth/update-password', passwordData);
+    return response.data;
+  },
+  forgotPassword: async (email) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  }
 };
 
 export default authService;

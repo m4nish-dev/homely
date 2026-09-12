@@ -54,7 +54,7 @@ const propertySchema = new mongoose.Schema(
       type: [
         {
           url: { type: String, required: true },
-          publicId: { type: String, required: true },
+          publicId: { type: String, required: false },
         },
       ],
       validate: [v => v.length > 0, 'You must provide at least one image'],
@@ -64,6 +64,12 @@ const propertySchema = new mongoose.Schema(
       {
         icon: String,
         label: String,
+      },
+    ],
+    nearbyAreas: [
+      {
+        name: String,
+        distance: String,
       },
     ],
     host: {
@@ -137,13 +143,12 @@ propertySchema.virtual('reviews', {
 });
 
 // Pre-save hook to generate unique slug
-propertySchema.pre('save', function (next) {
+propertySchema.pre('save', function () {
   if (this.isModified('title')) {
     const baseSlug = this.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     const shortId = uuidv4().split('-')[0]; // Use short UUID to ensure uniqueness
     this.slug = `${baseSlug}-${shortId}`;
   }
-  next();
 });
 
 // Instance method to check date availability

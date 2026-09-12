@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { sendTokenResponse, generateToken } from '../utils/generateToken.js';
 import sendEmail from '../utils/sendEmail.js';
+import { forgotPasswordTemplate } from '../utils/emailTemplates.js';
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -125,6 +126,7 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
       email: user.email,
       subject: 'Homely Password Reset',
       message,
+      html: forgotPasswordTemplate(resetUrl, user.name),
     });
 
     res.status(200).json({ success: true, data: 'Email sent' });

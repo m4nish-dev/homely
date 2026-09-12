@@ -1,17 +1,38 @@
 import "./BookingSuccess.css";
 import { FaCheckCircle, FaHome, FaTicketAlt } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import html2pdf from "html2pdf.js";
+import Invoice from "../../components/Invoice/Invoice";
 
 function BookingSuccess() {
   const navigate = useNavigate();
   const location = useLocation();
   const booking = location.state;
   const [visible, setVisible] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const invoiceRef = useRef();
 
   useEffect(() => {
     setTimeout(() => setVisible(true), 50);
   }, []);
+
+  const handleDownloadInvoice = () => {
+    if (!invoiceRef.current) return;
+    setGenerating(true);
+    
+    const opt = {
+      margin:       0,
+      filename:     `Homely_Invoice_${booking.bookingId || 'Booking'}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(invoiceRef.current).save().then(() => {
+      setGenerating(false);
+    });
+  };
 
   if (!booking) {
     return (
@@ -86,10 +107,15 @@ function BookingSuccess() {
           <button className="home-btn" onClick={() => navigate("/")}>
             <FaHome /> Back To Home
           </button>
-          <button className="explore-btn" onClick={() => navigate("/search")}>
-            Explore More Stays
+          <button className="explore-btn" onClick={handleDownloadInvoice} disabled={generating}>
+            {generating ? "Generating PDF..." : "Download Invoice"}
           </button>
         </div>
+      </div>
+      
+      {/* Hidden Invoice Component for PDF generation */}
+      <div style={{ position: "absolute", left: "-9999px", top: 0 }}>
+        <Invoice booking={booking} ref={invoiceRef} />
       </div>
     </div>
   );

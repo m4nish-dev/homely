@@ -4,6 +4,9 @@ import { MdOutlineBedroomParent, MdOutlineFreeBreakfast } from "react-icons/md";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import propertyService from "../../api/propertyService";
+import userService from "../../api/userService";
+import reviewService from "../../api/reviewService";
+import { useAuth } from "../../context/AuthContext";
 
 const amenityIcons = {
   "Private Pool": <FaSwimmingPool />,
@@ -53,8 +56,14 @@ function PropertyDetails() {
   const [shareMsg, setShareMsg] = useState("");
   const [selectedImg, setSelectedImg] = useState(null);
   
+  const { user } = useAuth();
+  
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState(5);
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviews, setReviews] = useState([]);
 
   // Asynchronous query on mount
   useEffect(() => {
@@ -68,8 +77,33 @@ function PropertyDetails() {
         setLoading(false);
       }
     };
+
+    const fetchFavorites = async () => {
+      if (user) {
+        try {
+          const { favorites } = await userService.getFavorites();
+          if (favorites.some(fav => fav._id === id)) {
+            setIsFav(true);
+          }
+        } catch (err) {
+          console.error("Failed to fetch favorites", err);
+        }
+      }
+    };
+
+    const fetchReviews = async () => {
+      try {
+        const { reviews } = await reviewService.getForProperty(id);
+        setReviews(reviews || []);
+      } catch (err) {
+        console.error("Failed to fetch reviews", err);
+      }
+    };
+
     fetchProperty();
-  }, [id]);
+    fetchFavorites();
+    fetchReviews();
+  }, [id, user]);
 
   if (loading) {
     return (
@@ -109,6 +143,53 @@ function PropertyDetails() {
     }
   };
 
+  const handleToggleFavorite = async () => {
+    if (!user) {
+      alert("Please login to save properties");
+      return;
+    }
+    try {
+      if (isFav) {
+        await userService.removeFavorite(id);
+      } else {
+        await userService.addFavorite(id);
+      }
+      setIsFav(!isFav);
+    } catch (err) {
+      console.error("Failed to toggle favorite", err);
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      alert("Please login to write a review");
+      return;
+    }
+    setSubmittingReview(true);
+    try {
+      const { review } = await reviewService.create({
+        propertyId: id,
+        rating: reviewRating,
+        comment: reviewText
+      });
+      alert("Review submitted successfully!");
+      setReviewText("");
+      setReviewRating(5);
+      
+      // Add the new review instantly to the top of the list, keeping populated user data format
+      const newReview = {
+        ...review,
+        user: { name: user.name, avatar: user.avatar }
+      };
+      setReviews([newReview, ...reviews]);
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to submit review");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
   return (
     <div className="property-page">
       {/* Image Lightbox */}
@@ -138,7 +219,7 @@ function PropertyDetails() {
           </button>
           <button
             className={`save-btn ${isFav ? "saved" : ""}`}
-            onClick={() => setIsFav(!isFav)}
+            onClick={handleToggleFavorite}
           >
             <FaHeart /> {isFav ? "Saved" : "Save"}
           </button>
@@ -220,12 +301,72 @@ function PropertyDetails() {
               </div>
             </div>
 
+            <div className="booking-features" style={{ marginBottom: "40px", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", padding: "16px", background: "#f9fafb", border: "none" }}>
+              <div className="booking-feature" style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}><FaCheck color="#22c55e" size={16} /> Free Cancellation</div>
+              <div className="booking-feature" style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}><FaCheck color="#22c55e" size={16} /> Instant Confirmation</div>
+              <div className="booking-feature" style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px" }}><FaCheck color="#22c55e" size={16} /> Secure Payments</div>
+            </div>
+
+            {/* Nearby Areas */}
+            {property.nearbyAreas && property.nearbyAreas.length > 0 && (
+              <div className="nearby-areas">
+                <h2>Nearby area to visit</h2>
+                <div className="nearby-grid">
+                  {property.nearbyAreas.map((area, i) => (
+                    <div className="nearby-card" key={i}>
+                      <FaMapMarkerAlt color="#d89b4a" />
+                      <div className="nearby-info">
+                        <h4>{area.name}</h4>
+                        <p>{area.distance}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Write a Review */}
+            <div className="write-review-section">
+              <h2>Write a review</h2>
+              {user ? (
+                <form className="review-form" onSubmit={handleReviewSubmit}>
+                  <div className="rating-select">
+                    <label>Rating:</label>
+                    <select value={reviewRating} onChange={(e) => setReviewRating(Number(e.target.value))}>
+                      {[5,4,3,2,1].map(num => <option key={num} value={num}>{num} Stars</option>)}
+                    </select>
+                  </div>
+                  <textarea
+                    placeholder="Share your experience..."
+                    value={reviewText}
+                    onChange={(e) => setReviewText(e.target.value)}
+                    required
+                    minLength={10}
+                  ></textarea>
+                  <button type="submit" disabled={submittingReview}>
+                    {submittingReview ? "Submitting..." : "Post Review"}
+                  </button>
+                </form>
+              ) : (
+                <p className="login-prompt">Please <a href="#" onClick={(e) => { e.preventDefault(); alert('Please use the Login button at top right'); }}>log in</a> to leave a review.</p>
+              )}
+            </div>
+
             {/* Reviews */}
             <div className="reviews-section">
-              <h2><FaStar /> {property.rating || "New"} · {property.reviewCount || 0} reviews</h2>
+              <h2><FaStar /> {property.rating || "New"} · {reviews.length} reviews</h2>
               <div className="reviews-grid">
-                {dummyReviews.map((r, i) => (
+                {reviews.length > 0 ? reviews.map((r, i) => (
                   <div className="review-card" key={i}>
+                    <div className="reviewer-avatar">{r.user?.name?.[0] || r.user?.avatar || "U"}</div>
+                    <div>
+                      <h4>{r.user?.name || "User"}</h4>
+                      <p className="review-date">{new Date(r.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+                      <p>{r.comment || r.text}</p>
+                    </div>
+                  </div>
+                )) : dummyReviews.map((r, i) => (
+                  <div className="review-card" key={`dummy-${i}`}>
                     <div className="reviewer-avatar">{r.avatar}</div>
                     <div>
                       <h4>{r.name}</h4>
@@ -247,12 +388,6 @@ function PropertyDetails() {
 
             <div className="booking-rating">
               <FaStar /> {property.rating || "New"} · {property.reviewCount || 0} reviews
-            </div>
-
-            <div className="booking-features">
-              <div className="booking-feature"><FaCheck color="#22c55e" /> Free Cancellation</div>
-              <div className="booking-feature"><FaCheck color="#22c55e" /> Instant Confirmation</div>
-              <div className="booking-feature"><FaCheck color="#22c55e" /> Secure Payments</div>
             </div>
 
             <div className="booking-price-breakdown">

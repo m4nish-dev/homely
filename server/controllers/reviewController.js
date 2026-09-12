@@ -9,28 +9,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 export const createReview = asyncHandler(async (req, res, next) => {
   const { propertyId, rating, comment, bookingId } = req.body;
 
-  // 1. Verify the booking exists and belongs to the user
-  const booking = await Booking.findById(bookingId);
-  if (!booking) {
-    res.status(404);
-    throw new Error('Booking not found');
-  }
 
-  if (booking.user.toString() !== req.user._id.toString()) {
-    res.status(403);
-    throw new Error('Not authorized to review this booking');
-  }
-
-  // 2. Ensure they actually stayed at the property (completed)
-  if (booking.status !== 'completed') {
-    res.status(400);
-    throw new Error('You can only review a property after your stay is completed');
-  }
-
-  if (booking.property.toString() !== propertyId) {
-    res.status(400);
-    throw new Error('Property ID does not match the booking record');
-  }
 
   // 3. Ensure they haven't already reviewed this property (compound index check)
   const existingReview = await Review.findOne({
