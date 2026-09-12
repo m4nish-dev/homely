@@ -7,6 +7,7 @@ import propertyService from "../../api/propertyService";
 import userService from "../../api/userService";
 import reviewService from "../../api/reviewService";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 
 const amenityIcons = {
   "Private Pool": <FaSwimmingPool />,
@@ -57,6 +58,7 @@ function PropertyDetails() {
   const [selectedImg, setSelectedImg] = useState(null);
   
   const { user } = useAuth();
+  const { toast } = useToast();
   
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -132,10 +134,13 @@ function PropertyDetails() {
 
   const serviceFee = 499;
 
-  const handleShare = async () => {
+  const handleShare = () => {
     const url = window.location.href;
     if (navigator.share) {
-      try { await navigator.share({ title: property.title, url }); } catch (_) {}
+      navigator.share({
+        title: property?.title || "Homely Property",
+        url: url,
+      }).catch(() => {});
     } else {
       navigator.clipboard.writeText(url);
       setShareMsg("Link copied!");
@@ -145,25 +150,28 @@ function PropertyDetails() {
 
   const handleToggleFavorite = async () => {
     if (!user) {
-      alert("Please login to save properties");
+      toast.warning("Please log in to save properties to your wishlist");
       return;
     }
     try {
       if (isFav) {
         await userService.removeFavorite(id);
+        toast.info("Removed from saved stays");
       } else {
         await userService.addFavorite(id);
+        toast.success("Saved to your wishlist!");
       }
       setIsFav(!isFav);
     } catch (err) {
       console.error("Failed to toggle favorite", err);
+      toast.error("Failed to update favorites");
     }
   };
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
-      alert("Please login to write a review");
+      toast.warning("Please log in to write a review");
       return;
     }
     setSubmittingReview(true);
@@ -173,7 +181,7 @@ function PropertyDetails() {
         rating: reviewRating,
         comment: reviewText
       });
-      alert("Review submitted successfully!");
+      toast.success("Review submitted successfully!");
       setReviewText("");
       setReviewRating(5);
       
@@ -184,7 +192,7 @@ function PropertyDetails() {
       };
       setReviews([newReview, ...reviews]);
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to submit review");
+      toast.error(err.response?.data?.message || "Failed to submit review");
     } finally {
       setSubmittingReview(false);
     }
@@ -348,7 +356,7 @@ function PropertyDetails() {
                   </button>
                 </form>
               ) : (
-                <p className="login-prompt">Please <a href="#" onClick={(e) => { e.preventDefault(); alert('Please use the Login button at top right'); }}>log in</a> to leave a review.</p>
+                <p className="login-prompt">Please <a href="#" onClick={(e) => { e.preventDefault(); toast.info('Please click the Login button at the top right to sign in'); }}>log in</a> to leave a review.</p>
               )}
             </div>
 

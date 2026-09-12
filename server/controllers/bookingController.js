@@ -251,3 +251,29 @@ export const getAllBookings = asyncHandler(async (req, res, next) => {
     bookings
   });
 });
+
+// @desc    Get public invoice details for direct view/download without login
+// @route   GET /api/bookings/public-invoice/:bookingId
+// @access  Public
+export const getPublicInvoice = asyncHandler(async (req, res, next) => {
+  const { bookingId } = req.params;
+  const isMongoId = mongoose.isValidObjectId(bookingId);
+  const query = isMongoId 
+    ? { $or: [{ _id: bookingId }, { bookingId }] } 
+    : { bookingId };
+
+  const booking = await Booking.findOne(query)
+    .populate('user', 'name email phone')
+    .populate('property', 'title location price images host address city');
+
+  if (!booking) {
+    res.status(404);
+    throw new Error('Invoice or booking record not found');
+  }
+
+  res.status(200).json({
+    success: true,
+    booking
+  });
+});
+

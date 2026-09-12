@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./App.css";
 
@@ -24,6 +24,7 @@ import MyBookings from "./pages/MyBookings/MyBookings";
 import Settings from "./pages/Settings/Settings";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import HostDashboard from "./pages/Host/HostDashboard";
+import PublicInvoice from "./pages/PublicInvoice/PublicInvoice";
 
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
@@ -105,6 +106,8 @@ function App() {
         <Route path="/booking-success" element={<BookingSuccess />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path="/user/bookings" element={<Navigate to="/my-bookings" replace />} />
+        <Route path="/invoice/:bookingId" element={<PublicInvoice />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/host" element={<HostDashboard />} />

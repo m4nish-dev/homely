@@ -6,6 +6,7 @@ import propertyService from "../../api/propertyService";
 import bookingService from "../../api/bookingService";
 import paymentService from "../../api/paymentService";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 
 // Dynamic script loader utility for the Razorpay SDK
 const loadRazorpayScript = () => {
@@ -22,6 +23,7 @@ function Booking() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -100,7 +102,7 @@ function Booking() {
     if (Object.keys(e).length > 0) { setErrors(e); return; }
     
     if (!user) {
-      alert("Please login or create an account to finalize your booking.");
+      toast.warning("Please login or create an account to finalize your booking.");
       return;
     }
 
@@ -161,7 +163,7 @@ function Booking() {
             });
           } catch (verifyError) {
             console.error("Payment Verification Failed", verifyError);
-            alert("Payment was processed, but the cryptographic signature failed to verify. Please contact support.");
+            toast.error("Payment was processed, but the cryptographic signature failed to verify. Please contact support.");
           }
         },
         prefill: { name, email },
@@ -170,14 +172,14 @@ function Booking() {
 
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", function (response) {
-        alert("Payment Gateway Error: " + response.error.description);
+        toast.error("Payment Gateway Error: " + response.error.description);
       });
       
       rzp.open();
 
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || err.message || "Failed to initialize the booking.");
+      toast.error(err.response?.data?.message || err.message || "Failed to initialize the booking.");
     } finally {
       setIsProcessing(false);
     }

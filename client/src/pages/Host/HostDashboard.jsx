@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 import propertyService from "../../api/propertyService";
 import Navbar from "../../components/Navbar/Navbar";
 import { FaHome, FaPlus, FaTrash, FaSpinner, FaMapMarkerAlt, FaStar } from "react-icons/fa";
@@ -8,6 +9,7 @@ import "./HostDashboard.css";
 
 function HostDashboard() {
   const { user } = useAuth();
+  const { toast, confirm } = useToast();
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,24 +79,35 @@ function HostDashboard() {
       const data = await propertyService.createProperty(formData);
       setProperties([data.property, ...properties]);
       setIsAdding(false);
+      toast.success("Listing published successfully!");
       
       // Reset form
       setTitle(""); setDescription(""); setPrice(""); setCity(""); setAddress(""); setImages([]);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create property. Do you have Cloudinary keys configured?");
+      const msg = err.response?.data?.message || "Failed to create property. Do you have Cloudinary keys configured?";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setUploading(false);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this property?")) return;
-    try {
-      await propertyService.deleteProperty(id);
-      setProperties(properties.filter(p => p._id !== id));
-    } catch (err) {
-      alert("Failed to delete property");
-    }
+  const handleDelete = (id) => {
+    confirm({
+      title: "Delete Property?",
+      message: "Are you sure you want to delete this property? This action cannot be undone.",
+      confirmText: "Delete",
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await propertyService.deleteProperty(id);
+          setProperties(prev => prev.filter(p => p._id !== id));
+          toast.success("Property deleted successfully");
+        } catch (err) {
+          toast.error("Failed to delete property");
+        }
+      }
+    });
   };
 
   if (!user || (user.role !== "host" && user.role !== "admin")) return null;

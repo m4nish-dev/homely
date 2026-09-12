@@ -17,6 +17,10 @@ const bookingService = {
     const response = await api.put(`/bookings/${id}/cancel`);
     return response.data;
   },
+  getPublicInvoice: async (bookingId) => {
+    const response = await api.get(`/bookings/public-invoice/${bookingId}`);
+    return response.data;
+  },
 };
 
 export default bookingService;

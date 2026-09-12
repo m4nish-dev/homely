@@ -14,12 +14,14 @@ import {
   FaSuitcase
 } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 import userService from "../../api/userService";
 
 function Navbar({ setShowLogin, isScrolled }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { toast, confirm } = useToast();
   const [activeCategory, setActiveCategory] = useState("Hotels");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -65,15 +67,21 @@ function Navbar({ setShowLogin, isScrolled }) {
             Become a Host
           </button>
         ) : user.role === "user" ? (
-          <button className="host-btn" onClick={async () => {
-            if (window.confirm("Do you want to upgrade your account to Host to start listing properties?")) {
-              try {
-                const data = await userService.becomeHost();
-                window.location.reload(); // Quickest way to force context hydration of new role
-              } catch (err) {
-                alert("Failed to become host");
+          <button className="host-btn" onClick={() => {
+            confirm({
+              title: "Become a Host?",
+              message: "Would you like to upgrade your account to Host to start listing properties on Homely?",
+              confirmText: "Upgrade to Host",
+              onConfirm: async () => {
+                try {
+                  await userService.becomeHost();
+                  toast.success("Welcome! You are now a Host.");
+                  setTimeout(() => window.location.reload(), 800);
+                } catch (err) {
+                  toast.error("Failed to become host");
+                }
               }
-            }
+            });
           }}>
             Become a Host
           </button>

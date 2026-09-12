@@ -5,6 +5,7 @@ import {
   getBookingById,
   cancelBooking,
   getAllBookings,
+  getPublicInvoice,
 } from '../controllers/bookingController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { authorize } from '../middleware/roleMiddleware.js';
@@ -13,7 +14,10 @@ import { createBookingValidator } from '../middleware/validators.js';
 
 const router = express.Router();
 
-// Enforce authentication for all booking routes
+// Public route for viewing/downloading invoices directly (e.g., from email links on mobile)
+router.get('/public-invoice/:bookingId', getPublicInvoice);
+
+// Enforce authentication for all protected booking routes
 router.use(protect);
 
 // Admin route must be placed before /:id to prevent route shadowing

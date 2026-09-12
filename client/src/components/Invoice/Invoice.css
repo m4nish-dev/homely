@@ -1,7 +1,9 @@
 .invoice-container {
   padding: 40px;
   background: white;
-  width: 800px;
+  max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
   color: #111827;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }

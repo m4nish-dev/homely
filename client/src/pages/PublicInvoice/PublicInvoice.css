@@ -1,0 +1,177 @@
+.public-invoice-page {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 24px 16px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.public-invoice-loading,
+.public-invoice-error {
+  margin-top: 100px;
+  text-align: center;
+  background: white;
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  max-width: 440px;
+  width: 100%;
+}
+
+.public-invoice-loading .spin {
+  animation: spin 1s linear infinite;
+  color: #16a34a;
+  margin-bottom: 16px;
+}
+
+.public-invoice-error h2 {
+  font-size: 22px;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.public-invoice-error p {
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Actions Header */
+.public-invoice-actions {
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.action-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-back-btn:hover {
+  background: #f9fafb;
+}
+
+.action-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.download-btn {
+  background: #16a34a;
+  color: white;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+}
+
+.download-btn:hover {
+  background: #15803d;
+}
+
+.print-btn {
+  background: white;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.print-btn:hover {
+  background: #f9fafb;
+}
+
+/* Card Wrapper */
+.public-invoice-card {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  max-width: 800px;
+  width: 100%;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .public-invoice-page {
+    background: white;
+    padding: 0;
+  }
+  .public-invoice-card {
+    box-shadow: none;
+    border-radius: 0;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .public-invoice-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .action-buttons {
+    width: 100%;
+  }
+  .action-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  .action-back-btn {
+    align-self: flex-start;
+  }
+}

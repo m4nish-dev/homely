@@ -39,7 +39,9 @@ export const forgotPasswordTemplate = (resetUrl, userName = 'User') => `
 export const bookingConfirmationTemplate = (booking) => {
   const checkIn = new Date(booking.checkIn).toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
   const checkOut = new Date(booking.checkOut).toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
-  const invoiceUrl = `${process.env.CLIENT_URL}/user/bookings`;
+  const clientUrl = (process.env.CLIENT_URL || 'https://homely-gilt.vercel.app').replace(/\/$/, '');
+  const invoiceUrl = `${clientUrl}/invoice/${booking.bookingId || booking._id}?download=true`;
+  const viewUrl = `${clientUrl}/invoice/${booking.bookingId || booking._id}`;
 
   return `
 <!DOCTYPE html>
@@ -58,7 +60,7 @@ export const bookingConfirmationTemplate = (booking) => {
     .detail-label { color: #6b7280; font-weight: 500; }
     .detail-value { color: #111827; font-weight: 600; text-align: right; }
     .total-row { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px solid #e5e7eb; font-size: 18px; font-weight: 700; color: #111827; }
-    .btn { display: inline-block; background-color: #111827; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; text-align: center; width: 100%; box-sizing: border-box; }
+    .btn { display: inline-block; background-color: #16a34a; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0 10px 0; text-align: center; width: 100%; box-sizing: border-box; }
     .footer { background-color: #f9fafb; padding: 20px; text-align: center; color: #9ca3af; font-size: 13px; border-top: 1px solid #f3f4f6; }
   </style>
 </head>
@@ -102,7 +104,8 @@ export const bookingConfirmationTemplate = (booking) => {
         </div>
       </div>
 
-      <a href="${invoiceUrl}" class="btn" style="color: white;">View & Download Invoice</a>
+      <a href="${invoiceUrl}" class="btn" style="color: #ffffff !important;">📥 Download PDF Invoice</a>
+      <p style="text-align: center; margin: 8px 0 16px; font-size: 13px;"><a href="${viewUrl}" style="color: #4b5563; text-decoration: underline;">Or view invoice directly in browser</a></p>
       <p style="text-align: center; font-size: 14px; color: #6b7280; margin-top: 15px;">Have questions? Reply to this email and our support team will assist you.</p>
     </div>
     <div class="footer">

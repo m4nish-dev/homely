@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 import adminService from "../../api/adminService";
 import Navbar from "../../components/Navbar/Navbar";
 import { FaUsers, FaChartLine, FaSuitcase, FaHome, FaCheckCircle, FaTimesCircle, FaStar } from "react-icons/fa";
@@ -8,6 +9,7 @@ import "./AdminDashboard.css";
 
 function AdminDashboard() {
   const { user } = useAuth();
+  const { toast, confirm } = useToast();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -45,19 +47,28 @@ function AdminDashboard() {
     try {
       await adminService.updateUserRole(userId, newRole);
       setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
+      toast.success(`User role updated to ${newRole}`);
     } catch (err) {
-      alert("Failed to update role");
+      toast.error("Failed to update role");
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-    try {
-      await adminService.deleteUser(userId);
-      setUsers(users.filter(u => u._id !== userId));
-    } catch (err) {
-      alert("Failed to delete user");
-    }
+  const handleDeleteUser = (userId) => {
+    confirm({
+      title: "Delete User?",
+      message: "Are you sure you want to delete this user? This cannot be undone.",
+      confirmText: "Delete User",
+      isDanger: true,
+      onConfirm: async () => {
+        try {
+          await adminService.deleteUser(userId);
+          setUsers(users.filter(u => u._id !== userId));
+          toast.success("User deleted successfully");
+        } catch (err) {
+          toast.error("Failed to delete user");
+        }
+      }
+    });
   };
 
   if (!user || user.role !== "admin") return null;
