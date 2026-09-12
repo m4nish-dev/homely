@@ -15,26 +15,32 @@ const logger = winston.createLogger({
     logFormat
   ),
   transports: [
-    new DailyRotateFile({
-      filename: 'logs/error-%DATE%.log',
-      datePattern: 'YYYY-MM-DD',
-      level: 'error',
-      maxFiles: '14d',
-    }),
-    new DailyRotateFile({
-      filename: 'logs/combined-%DATE%.log',
-      datePattern: 'YYYY-MM-DD',
-      maxFiles: '14d',
-    }),
+    // In production (Vercel), we ONLY log to console because Vercel has a read-only filesystem
+    // Writing to 'logs/' will crash the serverless function.
+    ...(process.env.NODE_ENV === 'production' 
+      ? [
+          new winston.transports.Console({
+            format: combine(colorize(), logFormat),
+          })
+        ]
+      : [
+          new DailyRotateFile({
+            filename: 'logs/error-%DATE%.log',
+            datePattern: 'YYYY-MM-DD',
+            level: 'error',
+            maxFiles: '14d',
+          }),
+          new DailyRotateFile({
+            filename: 'logs/combined-%DATE%.log',
+            datePattern: 'YYYY-MM-DD',
+            maxFiles: '14d',
+          }),
+          new winston.transports.Console({
+            format: combine(colorize(), logFormat),
+          })
+        ]
+    )
   ],
 });
-
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(
-    new winston.transports.Console({
-      format: combine(colorize(), logFormat),
-    })
-  );
-}
 
 export default logger;
