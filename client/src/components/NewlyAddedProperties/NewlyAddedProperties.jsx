@@ -1,13 +1,29 @@
 import { useState, useEffect } from "react";
 import propertyService from "../../api/propertyService";
-import { FaMapMarkerAlt, FaStar, FaArrowRight } from "react-icons/fa";
+import userService from "../../api/userService";
+import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
+import { FaMapMarkerAlt, FaStar, FaArrowRight, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./NewlyAddedProperties.css";
 
 function NewlyAddedProperties() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState([]);
+  const { user, setUser } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Sync favorites with user's saved properties
+  useEffect(() => {
+    if (user && user.favorites) {
+      const favIds = user.favorites.map((f) => (typeof f === "string" ? f : f._id));
+      setFavorites(favIds);
+    } else {
+      setFavorites([]);
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchNewProperties = async () => {
@@ -25,6 +41,48 @@ function NewlyAddedProperties() {
     };
     fetchNewProperties();
   }, []);
+
+  const toggleFavorite = async (id, e) => {
+    e.stopPropagation();
+    if (!user) {
+      toast.warning("Please log in to save properties to your wishlist");
+      return;
+    }
+
+    const isAlreadyFav = favorites.includes(id);
+    setFavorites((prev) =>
+      isAlreadyFav ? prev.filter((favId) => favId !== id) : [...prev, id]
+    );
+
+    try {
+      if (isAlreadyFav) {
+        await userService.removeFavorite(id);
+        toast.info("Removed from saved stays");
+      } else {
+        await userService.addFavorite(id);
+        toast.success("Saved to your wishlist!");
+      }
+
+      if (setUser) {
+        setUser((prev) => {
+          if (!prev) return prev;
+          const currentFavs = (prev.favorites || []).map((f) =>
+            typeof f === "string" ? f : f._id
+          );
+          const updated = isAlreadyFav
+            ? currentFavs.filter((favId) => favId !== id)
+            : [...currentFavs, id];
+          return { ...prev, favorites: updated };
+        });
+      }
+    } catch (err) {
+      console.error("Failed to toggle favorite", err);
+      toast.error("Failed to update favorites");
+      setFavorites((prev) =>
+        isAlreadyFav ? [...prev, id] : prev.filter((favId) => favId !== id)
+      );
+    }
+  };
 
   if (loading || properties.length === 0) return null;
 
@@ -51,6 +109,14 @@ function NewlyAddedProperties() {
             <div className="new-property-image">
               <img src={property.images?.[0]?.url || "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2070"} alt={property.title} />
               <div className="new-badge">NEW</div>
+              <button
+                className={`new-property-fav-btn ${favorites.includes(property._id) ? "active" : ""}`}
+                onClick={(e) => toggleFavorite(property._id, e)}
+                aria-label="Save to wishlist"
+                title={favorites.includes(property._id) ? "Remove from wishlist" : "Save to wishlist"}
+              >
+                <FaHeart color={favorites.includes(property._id) ? "#ff385c" : "rgba(255,255,255,0.9)"} />
+              </button>
             </div>
             <div className="new-property-info">
               <div className="new-property-location">

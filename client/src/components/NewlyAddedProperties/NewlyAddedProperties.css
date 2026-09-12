@@ -103,6 +103,46 @@
   letter-spacing: 1px;
 }
 
+.new-property-fav-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.new-property-fav-btn:hover {
+  background: white;
+  transform: scale(1.08);
+}
+
+.new-property-fav-btn svg {
+  font-size: 18px;
+  color: white;
+  transition: color 0.2s ease;
+}
+
+.new-property-fav-btn.active {
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.new-property-fav-btn.active svg {
+  color: #ff385c !important;
+  fill: #ff385c !important;
+}
+
 .new-property-info {
   padding: 20px;
 }

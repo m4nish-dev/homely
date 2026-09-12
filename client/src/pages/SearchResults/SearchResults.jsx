@@ -3,10 +3,15 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { FaStar, FaArrowLeft, FaFilter, FaSearch, FaHeart } from "react-icons/fa";
 import propertyService from "../../api/propertyService";
+import userService from "../../api/userService";
+import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 
 function SearchResults() {
   const navigate = useNavigate();
   const currentLocation = useLocation();
+  const { user, setUser } = useAuth();
+  const { toast } = useToast();
   const params = new URLSearchParams(currentLocation.search);
   const searchedLocation = params.get("location") || "";
   const searchedCategory = params.get("category") || "All";
@@ -17,6 +22,16 @@ function SearchResults() {
   
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Sync favorites with user's saved properties
+  useEffect(() => {
+    if (user && user.favorites) {
+      const favIds = user.favorites.map((f) => (typeof f === "string" ? f : f._id));
+      setFavorites(favIds);
+    } else {
+      setFavorites([]);
+    }
+  }, [user]);
 
   // Sync filter if URL category param changes
   useEffect(() => {
@@ -47,9 +62,48 @@ function SearchResults() {
 
   const filters = ["All", "Hotels", "Villas", "Flats", "Resorts", "Cabins"];
 
-  const toggleFavorite = (id, e) => {
+  const toggleFavorite = async (id, e) => {
     e.stopPropagation();
-    setFavorites((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]);
+    if (!user) {
+      toast.warning("Please log in to save properties to your wishlist");
+      return;
+    }
+
+    const isAlreadyFav = favorites.includes(id);
+    // Optimistic UI update
+    setFavorites((prev) =>
+      isAlreadyFav ? prev.filter((favId) => favId !== id) : [...prev, id]
+    );
+
+    try {
+      if (isAlreadyFav) {
+        await userService.removeFavorite(id);
+        toast.info("Removed from saved stays");
+      } else {
+        await userService.addFavorite(id);
+        toast.success("Saved to your wishlist!");
+      }
+
+      if (setUser) {
+        setUser((prev) => {
+          if (!prev) return prev;
+          const currentFavs = (prev.favorites || []).map((f) =>
+            typeof f === "string" ? f : f._id
+          );
+          const updated = isAlreadyFav
+            ? currentFavs.filter((favId) => favId !== id)
+            : [...currentFavs, id];
+          return { ...prev, favorites: updated };
+        });
+      }
+    } catch (err) {
+      console.error("Failed to toggle favorite", err);
+      toast.error("Failed to update favorites");
+      // Revert optimistic update
+      setFavorites((prev) =>
+        isAlreadyFav ? [...prev, id] : prev.filter((favId) => favId !== id)
+      );
+    }
   };
 
   return (

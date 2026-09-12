@@ -203,6 +203,17 @@
   transition: color 0.2s ease;
 }
 
+.favorite-btn.active {
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.favorite-btn.active svg {
+  color: #ff385c !important;
+  fill: #ff385c !important;
+  stroke: transparent !important;
+}
+
 .favorite-btn:hover svg {
   color: #ff385c;
   stroke: transparent;

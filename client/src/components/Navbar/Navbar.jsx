@@ -136,6 +136,12 @@ function Navbar({ setShowLogin, isScrolled }) {
                   )}
                   <div
                     className="profile-dropdown-link"
+                    onClick={() => { setDropdownOpen(false); navigate("/favorites"); }}
+                  >
+                    <FaHeart color="#ff385c" /> Saved Properties
+                  </div>
+                  <div
+                    className="profile-dropdown-link"
                     onClick={() => { setDropdownOpen(false); navigate("/my-bookings"); }}
                   >
                     <FaSuitcase /> My Bookings

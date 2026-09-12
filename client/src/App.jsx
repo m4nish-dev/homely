@@ -105,6 +105,9 @@ function App() {
         <Route path="/booking/:id" element={<Booking />} />
         <Route path="/booking-success" element={<BookingSuccess />} />
         <Route path="/favorites" element={<Favorites />} />
+        <Route path="/wishlist" element={<Navigate to="/favorites" replace />} />
+        <Route path="/liked" element={<Navigate to="/favorites" replace />} />
+        <Route path="/saved" element={<Navigate to="/favorites" replace />} />
         <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/user/bookings" element={<Navigate to="/my-bookings" replace />} />
         <Route path="/invoice/:bookingId" element={<PublicInvoice />} />
